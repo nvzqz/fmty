@@ -1,0 +1,9 @@
+[package]
+name = "fmty"
+version = "0.0.0"
+edition = "2021"
+authors = ["Nikolai Vazquez"]
+description = "Composable `core::fmt` utilities."
+categories = ["no-std", "rust-patterns", "value-formatting", "text-processing"]
+keywords = ["display", "format", "string", "text", "util"]
+publish = false
