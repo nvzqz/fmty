@@ -1,6 +1,6 @@
 use core::fmt::*;
 
-/// Implements [`Display`] via a closure.
+/// Implements [`Debug`]/[`Display`] via a closure.
 ///
 /// # Examples
 ///
@@ -29,6 +29,12 @@ pub struct FmtWith<F = fn(&mut Formatter) -> Result> {
 impl<F: Fn(&mut Formatter) -> Result> From<F> for FmtWith<F> {
     fn from(fmt: F) -> Self {
         Self { fmt }
+    }
+}
+
+impl<F: Fn(&mut Formatter) -> Result> Debug for FmtWith<F> {
+    fn fmt(&self, f: &mut Formatter) -> Result {
+        (self.fmt)(f)
     }
 }
 
