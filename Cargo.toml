@@ -6,4 +6,5 @@ authors = ["Nikolai Vazquez"]
 description = "Composable `core::fmt` utilities."
 categories = ["no-std", "rust-patterns", "value-formatting", "text-processing"]
 keywords = ["display", "format", "string", "text", "util"]
+readme = "README.md"
 publish = false

@@ -1,4 +1,2 @@
-//! Composable [`core::fmt`] utilities, brought to you by
-//! [@NikolaiVazquez](https://twitter.com/NikolaiVazquez).
-
+#![doc = include_str!("../README.md")]
 #![no_std]
