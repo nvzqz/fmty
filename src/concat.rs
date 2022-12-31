@@ -55,3 +55,26 @@ where
         Ok(())
     }
 }
+
+/// Like [`concat()`] over fixed items that may be different types.
+///
+/// As an optimization, this macro may return its input as-is or [`&str`](str)
+/// (if empty). Although this will not change in the future, it is good practice
+/// to treat the output type as an opaque <code>impl [Display]</code> rather
+/// than rely on the concrete type.
+///
+/// # Examples
+///
+/// ```
+/// assert_eq!(fmty::concat!().to_string(),          "");
+/// assert_eq!(fmty::concat!("hola").to_string(),    "hola");
+/// assert_eq!(fmty::concat!("hola", 1).to_string(), "hola1");
+/// ```
+#[macro_export]
+macro_rules! concat {
+    () => { "" };
+    ($x:expr $(,)?) => { $x };
+    ($x:expr $(, $xs:expr)+ $(,)?) => {
+        $crate::_priv::concat::Concat(($x, $crate::concat!($($xs),+)))
+    };
+}
