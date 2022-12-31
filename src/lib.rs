@@ -4,9 +4,10 @@
 
 mod concat;
 mod fmt_with;
+mod format_args;
 
 /// Private helper types and traits. Not for external use.
 #[doc(hidden)]
 pub mod _priv;
 
-pub use crate::{concat::*, fmt_with::*};
+pub use crate::{concat::*, fmt_with::*, format_args as fmt_args};
