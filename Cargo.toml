@@ -3,6 +3,7 @@ name = "fmty"
 version = "0.0.0"
 edition = "2021"
 authors = ["Nikolai Vazquez"]
+license = "MIT OR Apache-2.0"
 description = "Composable `core::fmt` utilities."
 categories = ["no-std", "rust-patterns", "value-formatting", "text-processing"]
 keywords = ["display", "format", "string", "text", "util"]
