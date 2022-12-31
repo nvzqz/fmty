@@ -74,7 +74,25 @@ where
 macro_rules! concat {
     () => { "" };
     ($x:expr $(,)?) => { $x };
-    ($x:expr $(, $xs:expr)+ $(,)?) => {
-        $crate::_priv::concat::Concat(($x, $crate::concat!($($xs),+)))
+    ($x:expr, $y:expr $(, $rest:expr)+ $(,)?) => {
+        $crate::_priv::concat::Concat(($x, $y, $crate::concat!($($rest),+)))
     };
+    ($x:expr $(, $rest:expr)+ $(,)?) => {
+        $crate::_priv::concat::Concat(($x, $crate::concat!($($rest),+)))
+    };
+}
+
+#[cfg(test)]
+mod tests {
+    use core::mem;
+
+    #[test]
+    fn concat3_size() {
+        let value = crate::concat!('"', "hi", '"');
+
+        assert_eq!(
+            mem::size_of_val(&value),
+            mem::size_of::<(char, &str, char)>()
+        );
+    }
 }
