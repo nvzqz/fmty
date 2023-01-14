@@ -10,8 +10,8 @@ use core::fmt::*;
 /// # Examples
 ///
 /// ```
-/// let value = fmty::join(["hola", "mundo"], ", ");
-/// assert_eq!(value.to_string(), "hola, mundo");
+/// let value = fmty::join(["hola", "mundo"], " ");
+/// assert_eq!(value.to_string(), "hola mundo");
 /// ```
 pub fn join<I, S>(iter: I, sep: S) -> Join<I::IntoIter, S>
 where
@@ -21,12 +21,33 @@ where
     Join { iter: iter.into_iter(), sep }
 }
 
+/// Implements [`Display`] by joining [`Iterator`] items with `, ` between each.
+///
+/// This is equivalent to <code>[join]\(iter, \", \"\)</code>.
+///
+/// # Examples
+///
+/// ```
+/// let value = fmty::csv(["hola", "mundo"]);
+/// assert_eq!(value.to_string(), "hola, mundo");
+/// ```
+pub fn csv<I>(iter: I) -> Csv<I::IntoIter>
+where
+    I: IntoIterator,
+    I::IntoIter: Clone,
+{
+    join(iter, ", ")
+}
+
 /// See [`join()`].
 #[derive(Clone, Copy)]
 pub struct Join<I, S> {
     iter: I,
     sep: S,
 }
+
+/// See [`csv()`].
+pub type Csv<I> = Join<I, &'static str>;
 
 impl<I, S> Display for Join<I, S>
 where
