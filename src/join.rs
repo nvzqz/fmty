@@ -1,4 +1,4 @@
-use core::fmt::*;
+use core::{fmt::*, iter};
 
 /// Implements [`Display`] by joining [`Iterator`] items with a separator
 /// between each.
@@ -19,6 +19,24 @@ where
     I::IntoIter: Clone,
 {
     Join { iter: iter.into_iter(), sep }
+}
+
+/// Implements [`Display`] by joining [`Iterator::map()`] results with a
+/// separator between each.
+///
+/// # Examples
+///
+/// ```
+/// let value = fmty::join_map(["hola", "mundo"], " ", |s| s.to_uppercase());
+/// assert_eq!(value.to_string(), "HOLA MUNDO");
+/// ```
+pub fn join_map<I, S, R, F>(iter: I, sep: S, f: F) -> JoinMap<I::IntoIter, S, F>
+where
+    I: IntoIterator,
+    I::IntoIter: Clone,
+    F: Fn(I::Item) -> R + Clone,
+{
+    join(iter.into_iter().map(f), sep)
 }
 
 /// Implements [`Display`] by joining [`Iterator`] items with `, ` between each.
@@ -45,6 +63,9 @@ pub struct Join<I, S> {
     iter: I,
     sep: S,
 }
+
+/// See [`join_map()`].
+pub type JoinMap<I, S, F> = Join<iter::Map<I, F>, S>;
 
 /// See [`csv()`].
 pub type Csv<I> = Join<I, &'static str>;
