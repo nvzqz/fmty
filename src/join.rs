@@ -57,6 +57,24 @@ where
     join(iter, ", ")
 }
 
+/// Implements [`Display`] by joining [`Iterator::map()`] results with `, `
+/// between each.
+///
+/// # Examples
+///
+/// ```
+/// let value = fmty::csv_map(["hola", "mundo"], |s| s.to_uppercase());
+/// assert_eq!(value.to_string(), "HOLA, MUNDO");
+/// ```
+pub fn csv_map<I, R, F>(iter: I, f: F) -> CsvMap<I::IntoIter, F>
+where
+    I: IntoIterator,
+    I::IntoIter: Clone,
+    F: Fn(I::Item) -> R + Clone,
+{
+    csv(iter.into_iter().map(f))
+}
+
 /// See [`join()`].
 #[derive(Clone, Copy)]
 pub struct Join<I, S> {
@@ -69,6 +87,9 @@ pub type JoinMap<I, S, F> = Join<iter::Map<I, F>, S>;
 
 /// See [`csv()`].
 pub type Csv<I> = Join<I, &'static str>;
+
+/// See [`csv_map()`].
+pub type CsvMap<I, F> = Csv<iter::Map<I, F>>;
 
 impl<I, S> Display for Join<I, S>
 where
