@@ -1,4 +1,4 @@
-use core::fmt::*;
+use core::{fmt::*, iter};
 
 /// Implements [`Display`] by concatenating [`Iterator`] items.
 ///
@@ -27,11 +27,31 @@ where
     iter.into()
 }
 
+/// Implements [`Display`] by concatenating [`Iterator::map()`] results.
+///
+/// # Examples
+///
+/// ```
+/// let value = fmty::concat_map(["hola", "mundo"], |s| s.to_uppercase());
+/// assert_eq!(value.to_string(), "HOLAMUNDO");
+/// ```
+pub fn concat_map<I, R, F>(iter: I, f: F) -> ConcatMap<I::IntoIter, F>
+where
+    I: IntoIterator,
+    I::IntoIter: Clone,
+    F: Fn(I::Item) -> R + Clone,
+{
+    concat(iter.into_iter().map(f))
+}
+
 /// See [`concat()`].
 #[derive(Clone, Copy)]
 pub struct Concat<I> {
     iter: I,
 }
+
+/// See [`concat_map()`].
+pub type ConcatMap<I, F> = Concat<iter::Map<I, F>>;
 
 impl<I> From<I> for Concat<I::IntoIter>
 where
