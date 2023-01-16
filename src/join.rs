@@ -103,6 +103,19 @@ where
     JoinMap { iter: Once::new(iter.into_iter()), sep, map: f }
 }
 
+/// Implements [`Display`] by joining [tuple](prim@tuple) items with a separator
+/// between each.
+///
+/// # Examples
+///
+/// ```
+/// let value = fmty::join_tuple(("hola", "mundo"), " ");
+/// assert_eq!(value.to_string(), "hola mundo");
+/// ```
+pub fn join_tuple<T, S>(tuple: T, sep: S) -> JoinTuple<T, S> {
+    JoinTuple { tuple, sep }
+}
+
 /// Implements [`Display`] by joining [`Iterator`] items with `, ` between each.
 ///
 /// This is equivalent to <code>[join]\(iter, \", \"\)</code>.
@@ -191,6 +204,19 @@ where
     join_map_once(iter, ", ", f)
 }
 
+/// Implements [`Display`] by joining [tuple](prim@tuple) items with `, `
+/// between each.
+///
+/// # Examples
+///
+/// ```
+/// let value = fmty::csv_tuple(("hola", "mundo"));
+/// assert_eq!(value.to_string(), "hola, mundo");
+/// ```
+pub fn csv_tuple<T>(tuple: T) -> CsvTuple<T> {
+    join_tuple(tuple, ", ")
+}
+
 /// See [`join()`].
 #[derive(Clone, Copy)]
 pub struct Join<I, S> {
@@ -212,6 +238,13 @@ pub struct JoinMap<I, S, F> {
 /// See [`join_map_once()`].
 pub type JoinMapOnce<I, S, F> = JoinMap<Once<I>, S, F>;
 
+/// See [`join_tuple()`].
+#[derive(Clone, Copy)]
+pub struct JoinTuple<T, S> {
+    tuple: T,
+    sep: S,
+}
+
 /// See [`csv()`].
 pub type Csv<I> = Join<I, &'static str>;
 
@@ -223,6 +256,9 @@ pub type CsvMap<I, F> = JoinMap<I, &'static str, F>;
 
 /// See [`csv_map_once()`].
 pub type CsvMapOnce<I, F> = CsvMap<Once<I>, F>;
+
+/// See [`csv_tuple()`].
+pub type CsvTuple<T> = JoinTuple<T, &'static str>;
 
 impl<I, S> Display for Join<I, S>
 where
@@ -307,3 +343,53 @@ where
         Ok(())
     }
 }
+
+impl<S: Display> Display for JoinTuple<(), S> {
+    fn fmt(&self, _: &mut Formatter) -> Result {
+        Ok(())
+    }
+}
+
+impl<T0: Display, S: Display> Display for JoinTuple<(T0,), S> {
+    fn fmt(&self, f: &mut Formatter) -> Result {
+        write!(f, "{}", self.tuple.0)
+    }
+}
+
+/// Implements `Display` for `JoinTuple<(T, ...), S>`.
+macro_rules! impl_tuple {
+    ($x:ident) => {};
+    ($($x:ident),+) => {
+        impl<$($x),+, S> Display for JoinTuple<($($x,)+), S>
+        where
+            $($x: Display,)+
+            S: Display,
+        {
+            fn fmt(&self, f: &mut Formatter) -> Result {
+                #[allow(non_snake_case)]
+                let ($($x,)+) = &self.tuple;
+
+                write!(
+                    f,
+                    impl_tuple_fmt!($($x),+),
+                    $($x = $x,)+
+                    sep = self.sep,
+                )
+            }
+        }
+
+        peel!(impl_tuple: $($x),+);
+    };
+}
+
+/// Creates the format string for `impl_tuple!`.
+macro_rules! impl_tuple_fmt {
+    ($x:ident $(, $rest:ident)*) => {
+        core::concat!(
+            "{", core::stringify!($x), "}",
+            $("{sep}{", core::stringify!($rest), "}",)*
+        )
+    };
+}
+
+impl_tuple!(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11);
