@@ -5,6 +5,9 @@
 #[cfg(test)]
 extern crate alloc;
 
+#[macro_use]
+mod macros;
+
 mod concat;
 mod convert_case;
 mod fmt_with;

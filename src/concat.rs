@@ -230,13 +230,7 @@ macro_rules! impl_tuple {
             }
         }
 
-        impl_peel!($($x),+);
-    };
-}
-
-macro_rules! impl_peel {
-    ($x:ident $(, $rest:ident)*) => {
-        impl_tuple!($($rest),*);
+        peel!(impl_tuple: $($x),+);
     };
 }
 
