@@ -107,6 +107,9 @@ where
 ///
 /// This is equivalent to <code>[join]\(iter, \", \"\)</code>.
 ///
+/// If [`Clone`] for the [`Iterator`] is too expensive, consider using
+/// [`csv_once()`].
+///
 /// # Examples
 ///
 /// ```
@@ -121,11 +124,38 @@ where
     join(iter, ", ")
 }
 
+/// Implements [`Display`] by joining [`Iterator`] items with `, ` between each,
+/// at most once.
+///
+/// This is equivalent to <code>[join_once]\(iter, \", \"\)</code>.
+///
+/// This is a non-[`Clone`] alternative to [`csv()`]. It uses interior
+/// mutability to take ownership of the iterator in the first call to
+/// [`Display::fmt()`]. As a result, [`CsvOnce`] does not implement [`Sync`].
+///
+/// # Examples
+///
+/// ```
+/// let value = fmty::csv_once(["hola", "mundo"]);
+/// assert_eq!(value.to_string(), "hola, mundo");
+///
+/// assert_eq!(value.to_string(), "");
+/// ```
+pub fn csv_once<I>(iter: I) -> CsvOnce<I::IntoIter>
+where
+    I: IntoIterator,
+{
+    join_once(iter, ", ")
+}
+
 /// Implements [`Display`] by joining mapped [`Iterator`] results with `, `
 /// between each.
 ///
 /// Unlike <code>[csv]\([iter.map(f)](Iterator::map)\)</code>, this function
 /// does not require the mapping closure to be [`Clone`].
+///
+/// If [`Clone`] for the [`Iterator`] is too expensive, consider using
+/// [`csv_map_once()`].
 ///
 /// # Examples
 ///
@@ -140,6 +170,25 @@ where
     F: Fn(I::Item) -> R,
 {
     join_map(iter, ", ", f)
+}
+
+/// Implements [`Display`] by joining mapped [`Iterator`] results with `, `
+/// between each, at most once.
+///
+/// # Examples
+///
+/// ```
+/// let value = fmty::csv_map_once(["hola", "mundo"], fmty::to_uppercase);
+/// assert_eq!(value.to_string(), "HOLA, MUNDO");
+///
+/// assert_eq!(value.to_string(), "");
+/// ```
+pub fn csv_map_once<I, R, F>(iter: I, f: F) -> CsvMapOnce<I::IntoIter, F>
+where
+    I: IntoIterator,
+    F: Fn(I::Item) -> R,
+{
+    join_map_once(iter, ", ", f)
 }
 
 /// See [`join()`].
@@ -166,8 +215,14 @@ pub type JoinMapOnce<I, S, F> = JoinMap<Once<I>, S, F>;
 /// See [`csv()`].
 pub type Csv<I> = Join<I, &'static str>;
 
+/// See [`csv_once()`].
+pub type CsvOnce<I> = Csv<Once<I>>;
+
 /// See [`csv_map()`].
 pub type CsvMap<I, F> = JoinMap<I, &'static str, F>;
+
+/// See [`csv_map_once()`].
+pub type CsvMapOnce<I, F> = CsvMap<Once<I>, F>;
 
 impl<I, S> Display for Join<I, S>
 where
