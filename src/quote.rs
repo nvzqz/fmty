@@ -119,3 +119,55 @@ pub fn quote_guillemet_single<T>(value: T) -> Infix<T, char> {
 pub fn quote_guillemet_double<T>(value: T) -> Infix<T, char> {
     infix('«', value, '»')
 }
+
+/// Implements [`Display`] by placing a value between [`「` and `」`](https://en.wikipedia.org/wiki/Quotation_mark#Chinese,_Japanese_and_Korean).
+///
+/// # Examples
+///
+/// ```
+/// let value = fmty::quote_cjk("文字");
+///
+/// assert_eq!(value.to_string(), "「文字」");
+/// ```
+pub fn quote_cjk<T>(value: T) -> Infix<T, char> {
+    infix('「', value, '」')
+}
+
+/// Implements [`Display`] by placing a value between [`﹁` and `﹂`](https://en.wikipedia.org/wiki/Quotation_mark#Chinese,_Japanese_and_Korean).
+///
+/// # Examples
+///
+/// ```
+/// let value = fmty::quote_cjk_vert("文字");
+///
+/// assert_eq!(value.to_string(), "﹁文字﹂");
+/// ```
+pub fn quote_cjk_vert<T>(value: T) -> Infix<T, char> {
+    infix('﹁', value, '﹂')
+}
+
+/// Implements [`Display`] by placing a value between [`『` and `』`](https://en.wikipedia.org/wiki/Quotation_mark#Chinese,_Japanese_and_Korean).
+///
+/// # Examples
+///
+/// ```
+/// let value = fmty::quote_cjk_white("文字");
+///
+/// assert_eq!(value.to_string(), "『文字』");
+/// ```
+pub fn quote_cjk_white<T>(value: T) -> Infix<T, char> {
+    infix('『', value, '』')
+}
+
+/// Implements [`Display`] by placing a value between [`﹃` and `﹄`](https://en.wikipedia.org/wiki/Quotation_mark#Chinese,_Japanese_and_Korean).
+///
+/// # Examples
+///
+/// ```
+/// let value = fmty::quote_cjk_white_vert("文字");
+///
+/// assert_eq!(value.to_string(), "﹃文字﹄");
+/// ```
+pub fn quote_cjk_white_vert<T>(value: T) -> Infix<T, char> {
+    infix('﹃', value, '﹄')
+}
