@@ -1,9 +1,14 @@
 use core::fmt::*;
 
+use crate::once::Once;
+
 /// Implements [`Display`] by concatenating [`Iterator`] items.
 ///
 /// This is a non-allocating alternative to
 /// [`[T]::concat()`](https://doc.rust-lang.org/std/primitive.slice.html#method.concat).
+///
+/// If [`Clone`] for the [`Iterator`] is too expensive, consider using
+/// [`concat_once()`].
 ///
 /// # Examples
 ///
@@ -27,10 +32,31 @@ where
     iter.into()
 }
 
+/// Implements [`Display`] by concatenating [`Iterator`] items, at most once.
+///
+/// This is a non-[`Clone`] alternative to [`concat()`]. It uses interior
+/// mutability to take ownership of the iterator in the first call to
+/// [`Display::fmt()`]. As a result, [`ConcatOnce`] does not implement [`Sync`].
+///
+/// # Examples
+///
+/// ```
+/// let value = fmty::concat_once(["hola", "mundo"]);
+/// assert_eq!(value.to_string(), "holamundo");
+///
+/// assert_eq!(value.to_string(), "");
+/// ```
+pub fn concat_once<I: IntoIterator>(iter: I) -> ConcatOnce<I::IntoIter> {
+    Concat { iter: Once::new(iter.into_iter()) }
+}
+
 /// Implements [`Display`] by concatenating mapped [`Iterator`] results.
 ///
 /// Unlike <code>[concat](concat())\([iter.map(f)](Iterator::map)\)</code>, this
 /// function does not require the mapping closure to be [`Clone`].
+///
+/// If [`Clone`] for the [`Iterator`] is too expensive, consider using
+/// [`concat_map_once()`].
 ///
 /// # Examples
 ///
@@ -45,6 +71,30 @@ where
     F: Fn(I::Item) -> R,
 {
     ConcatMap { iter: iter.into_iter(), map: f }
+}
+
+/// Implements [`Display`] by concatenating mapped [`Iterator`] results, at most
+/// once.
+///
+/// This is a non-[`Clone`] alternative to [`concat_map()`]. It uses interior
+/// mutability to take ownership of the iterator in the first call to
+/// [`Display::fmt()`]. As a result, [`ConcatMapOnce`] does not implement
+/// [`Sync`].
+///
+/// # Examples
+///
+/// ```
+/// let value = fmty::concat_map_once(["hola", "mundo"], fmty::to_uppercase);
+/// assert_eq!(value.to_string(), "HOLAMUNDO");
+///
+/// assert_eq!(value.to_string(), "");
+/// ```
+pub fn concat_map_once<I, R, F>(iter: I, f: F) -> ConcatMapOnce<I::IntoIter, F>
+where
+    I: IntoIterator,
+    F: Fn(I::Item) -> R,
+{
+    ConcatMap { iter: Once::new(iter.into_iter()), map: f }
 }
 
 /// Implements [`Display`] by concatenating [tuple](prim@tuple) items that may
@@ -69,12 +119,18 @@ pub struct Concat<I> {
     iter: I,
 }
 
+/// See [`concat_once()`].
+pub type ConcatOnce<I> = Concat<Once<I>>;
+
 /// See [`concat_map()`].
 #[derive(Clone, Copy)]
 pub struct ConcatMap<I, F> {
     iter: I,
     map: F,
 }
+
+/// See [`concat_map_once()`].
+pub type ConcatMapOnce<I, F> = ConcatMap<Once<I>, F>;
 
 /// See [`concat_tuple()`].
 #[derive(Clone, Copy)]
@@ -112,6 +168,37 @@ where
     fn fmt(&self, f: &mut Formatter) -> Result {
         for item in self.iter.clone() {
             write!(f, "{}", (self.map)(item))?;
+        }
+        Ok(())
+    }
+}
+
+impl<I> Display for ConcatOnce<I>
+where
+    I: Iterator,
+    I::Item: Display,
+{
+    fn fmt(&self, f: &mut Formatter) -> Result {
+        if let Some(iter) = self.iter.take() {
+            for item in iter {
+                write!(f, "{item}")?;
+            }
+        }
+        Ok(())
+    }
+}
+
+impl<I, F, R> Display for ConcatMapOnce<I, F>
+where
+    I: Iterator + Clone,
+    F: Fn(I::Item) -> R,
+    R: Display,
+{
+    fn fmt(&self, f: &mut Formatter) -> Result {
+        if let Some(iter) = self.iter.take() {
+            for item in iter {
+                write!(f, "{}", (self.map)(item))?;
+            }
         }
         Ok(())
     }
@@ -212,8 +299,13 @@ macro_rules! concat {
 
 #[cfg(test)]
 mod tests {
-    use alloc::string::ToString;
-    use core::mem;
+    use alloc::{
+        rc::{Rc, Weak},
+        string::ToString,
+    };
+    use core::{fmt::Display, iter, mem};
+
+    use super::*;
 
     #[test]
     fn concat3_size() {
@@ -251,5 +343,32 @@ mod tests {
             A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11,
             B0, B1, B2, B3, B4, B5, B6, B7, B8, B9, B10, B11
         );
+    }
+
+    /// Tests invoking `ConcatOnce` in a reference cycle.
+    ///
+    /// When run under Miri, this test ensures `Once` does not have UB.
+    #[test]
+    fn concat_once_cycle() {
+        let rc: Rc<ConcatOnce<iter::FromFn<_>>> = Rc::new_cyclic(|rc| {
+            let rc = Weak::clone(rc) as Weak<dyn Display>;
+
+            let mut ran = false;
+            let iter = iter::from_fn(move || {
+                if ran {
+                    return None;
+                }
+                ran = true;
+
+                let rc = rc.upgrade().expect("`Rc` should be initialized");
+
+                // Eagerly evaluate `rc`. Recursing should be a no-op.
+                Some(alloc::format!("X{rc}"))
+            });
+
+            concat_once(iter)
+        });
+
+        assert_eq!(rc.to_string(), "X");
     }
 }

@@ -11,6 +11,7 @@ mod fmt_with;
 mod format_args;
 mod infix;
 mod join;
+mod once;
 mod quote;
 mod repeat;
 mod truncate;
