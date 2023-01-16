@@ -10,6 +10,7 @@ mod convert_case;
 mod fmt_with;
 mod format_args;
 mod join;
+mod quote;
 mod repeat;
 mod truncate;
 
@@ -19,5 +20,5 @@ pub mod _priv;
 
 pub use crate::{
     concat::*, convert_case::*, fmt_with::*, format_args as fmt_args, join::*,
-    repeat::*, truncate::*,
+    quote::*, repeat::*, truncate::*,
 };
