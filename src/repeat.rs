@@ -16,6 +16,27 @@ pub fn repeat<T>(value: T, n: usize) -> Repeat<T> {
     Repeat { value, n }
 }
 
+/// Implements [`Display`] by invoking a closure `n` times.
+///
+/// # Examples
+///
+/// ```
+/// use std::cell::Cell;
+///
+/// let counter = Cell::new(1);
+///
+/// let value = fmty::repeat_with(3, || {
+///     let result = counter.get();
+///     counter.set(result + 1);
+///     result
+/// });
+///
+/// assert_eq!(value.to_string(), "123");
+/// ```
+pub fn repeat_with<F>(n: usize, f: F) -> RepeatWith<F> {
+    RepeatWith { n, f }
+}
+
 /// See [`repeat()`].
 #[derive(Clone, Copy)]
 pub struct Repeat<T> {
@@ -23,10 +44,32 @@ pub struct Repeat<T> {
     n: usize,
 }
 
+/// See [`repeat_with()`].
+#[derive(Clone, Copy)]
+pub struct RepeatWith<F> {
+    // Although this could alias `Concat<iter::Take<iter::RepeatWith<F>>>`, it
+    // would not be able to implement `Copy` because `Take` doesn't.
+    f: F,
+    n: usize,
+}
+
 impl<T: Display> Display for Repeat<T> {
     fn fmt(&self, f: &mut Formatter) -> Result {
         for _ in 0..self.n {
             write!(f, "{}", self.value)?;
+        }
+        Ok(())
+    }
+}
+
+impl<F, R> Display for RepeatWith<F>
+where
+    F: Fn() -> R,
+    R: Display,
+{
+    fn fmt(&self, f: &mut Formatter) -> Result {
+        for _ in 0..self.n {
+            write!(f, "{}", (self.f)())?;
         }
         Ok(())
     }
