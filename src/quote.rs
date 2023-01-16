@@ -1,6 +1,7 @@
-use core::fmt::*;
+#[allow(unused)]
+use core::fmt::Display;
 
-use crate::concat;
+use crate::{infix, Infix};
 
 /// Implements [`Display`] by placing a value between `'`.
 ///
@@ -11,8 +12,8 @@ use crate::concat;
 ///
 /// assert_eq!(value.to_string(), "'123'");
 /// ```
-pub fn quote_single<T: Display>(value: T) -> impl Display {
-    concat!('\'', value, '\'')
+pub fn quote_single<T>(value: T) -> Infix<T, char> {
+    infix('\'', value, '\'')
 }
 
 /// Implements [`Display`] by placing a value between `"`.
@@ -24,8 +25,8 @@ pub fn quote_single<T: Display>(value: T) -> impl Display {
 ///
 /// assert_eq!(value.to_string(), "\"123\"");
 /// ```
-pub fn quote_double<T: Display>(value: T) -> impl Display {
-    concat!('"', value, '"')
+pub fn quote_double<T>(value: T) -> Infix<T, char> {
+    infix('"', value, '"')
 }
 
 /// Implements [`Display`] by placing a value between <code>`</code>.
@@ -37,8 +38,8 @@ pub fn quote_double<T: Display>(value: T) -> impl Display {
 ///
 /// assert_eq!(value.to_string(), "`code`");
 /// ```
-pub fn quote_backtick<T: Display>(value: T) -> impl Display {
-    concat!('`', value, '`')
+pub fn quote_backtick<T: Display>(value: T) -> Infix<T, char> {
+    infix('`', value, '`')
 }
 
 /// Implements [`Display`] by placing a value between `‘` and `’`.
@@ -50,8 +51,8 @@ pub fn quote_backtick<T: Display>(value: T) -> impl Display {
 ///
 /// assert_eq!(value.to_string(), "‘supposedly’");
 /// ```
-pub fn quote_directed_single<T: Display>(value: T) -> impl Display {
-    concat!('‘', value, '’')
+pub fn quote_directed_single<T>(value: T) -> Infix<T, char> {
+    infix('‘', value, '’')
 }
 
 /// Implements [`Display`] by placing a value between `“` and `”`.
@@ -63,8 +64,8 @@ pub fn quote_directed_single<T: Display>(value: T) -> impl Display {
 ///
 /// assert_eq!(value.to_string(), "“Stunning!”");
 /// ```
-pub fn quote_directed_double<T: Display>(value: T) -> impl Display {
-    concat!('“', value, '”')
+pub fn quote_directed_double<T>(value: T) -> Infix<T, char> {
+    infix('“', value, '”')
 }
 
 /// Implements [`Display`] by placing a value between [`‚` and `‘`](https://en.wikipedia.org/wiki/Quotation_mark#German).
@@ -76,8 +77,8 @@ pub fn quote_directed_double<T: Display>(value: T) -> impl Display {
 ///
 /// assert_eq!(value.to_string(), "‚Wie geht's?‘");
 /// ```
-pub fn quote_low_single<T: Display>(value: T) -> impl Display {
-    concat!('‚', value, '‘')
+pub fn quote_low_single<T>(value: T) -> Infix<T, char> {
+    infix('‚', value, '‘')
 }
 
 /// Implements [`Display`] by placing a value between [`„` and `“`](https://en.wikipedia.org/wiki/Quotation_mark#German).
@@ -89,8 +90,8 @@ pub fn quote_low_single<T: Display>(value: T) -> impl Display {
 ///
 /// assert_eq!(value.to_string(), "„Perfekt!“");
 /// ```
-pub fn quote_low_double<T: Display>(value: T) -> impl Display {
-    concat!('„', value, '“')
+pub fn quote_low_double<T>(value: T) -> Infix<T, char> {
+    infix('„', value, '“')
 }
 
 /// Implements [`Display`] by placing a value between [`‹` and `›`](https://en.wikipedia.org/wiki/Guillemet).
@@ -102,8 +103,8 @@ pub fn quote_low_double<T: Display>(value: T) -> impl Display {
 ///
 /// assert_eq!(value.to_string(), "‹Comment ça va?›");
 /// ```
-pub fn quote_guillemet_single<T: Display>(value: T) -> impl Display {
-    concat!('‹', value, '›')
+pub fn quote_guillemet_single<T>(value: T) -> Infix<T, char> {
+    infix('‹', value, '›')
 }
 
 /// Implements [`Display`] by placing a value between [`«` and `»`](https://en.wikipedia.org/wiki/Guillemet).
@@ -115,6 +116,6 @@ pub fn quote_guillemet_single<T: Display>(value: T) -> impl Display {
 ///
 /// assert_eq!(value.to_string(), "«Impressionnante!»");
 /// ```
-pub fn quote_guillemet_double<T: Display>(value: T) -> impl Display {
-    concat!('«', value, '»')
+pub fn quote_guillemet_double<T>(value: T) -> Infix<T, char> {
+    infix('«', value, '»')
 }
