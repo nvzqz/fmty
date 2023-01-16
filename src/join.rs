@@ -27,7 +27,7 @@ where
 /// # Examples
 ///
 /// ```
-/// let value = fmty::join_map(["hola", "mundo"], " ", |s| s.to_uppercase());
+/// let value = fmty::join_map(["hola", "mundo"], " ", fmty::to_uppercase);
 /// assert_eq!(value.to_string(), "HOLA MUNDO");
 /// ```
 pub fn join_map<I, S, R, F>(iter: I, sep: S, f: F) -> JoinMap<I::IntoIter, S, F>
@@ -63,7 +63,7 @@ where
 /// # Examples
 ///
 /// ```
-/// let value = fmty::csv_map(["hola", "mundo"], |s| s.to_uppercase());
+/// let value = fmty::csv_map(["hola", "mundo"], fmty::to_uppercase);
 /// assert_eq!(value.to_string(), "HOLA, MUNDO");
 /// ```
 pub fn csv_map<I, R, F>(iter: I, f: F) -> CsvMap<I::IntoIter, F>

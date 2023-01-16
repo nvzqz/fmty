@@ -32,7 +32,7 @@ where
 /// # Examples
 ///
 /// ```
-/// let value = fmty::concat_map(["hola", "mundo"], |s| s.to_uppercase());
+/// let value = fmty::concat_map(["hola", "mundo"], fmty::to_uppercase);
 /// assert_eq!(value.to_string(), "HOLAMUNDO");
 /// ```
 pub fn concat_map<I, R, F>(iter: I, f: F) -> ConcatMap<I::IntoIter, F>
