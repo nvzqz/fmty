@@ -1,11 +1,16 @@
 use core::fmt::*;
 
+use crate::once::Once;
+
 /// Implements [`Display`] by joining [`Iterator`] items with a separator
 /// between each.
 ///
 /// This may be used as a non-allocating alternative to
 /// [`[T]::join()`](https://doc.rust-lang.org/std/primitive.slice.html#method.join)
 /// or [`itertools::join()`](https://docs.rs/itertools/latest/itertools/fn.join.html).
+///
+/// If [`Clone`] for the [`Iterator`] is too expensive, consider using
+/// [`join_once()`].
 ///
 /// # Examples
 ///
@@ -21,11 +26,39 @@ where
     Join { iter: iter.into_iter(), sep }
 }
 
+/// Implements [`Display`] by joining [`Iterator`] items with a separator
+/// between each, at most once.
+///
+/// This is a non-[`Clone`] alternative to [`join()`]. It uses interior
+/// mutability to take ownership of the iterator in the first call to
+/// [`Display::fmt()`]. As a result, [`JoinOnce`] does not implement [`Sync`].
+///
+/// This is similar to [`Itertools::format()`](https://docs.rs/itertools/latest/itertools/trait.Itertools.html#method.format)
+/// except that it will not panic if called more than once.
+///
+/// # Examples
+///
+/// ```
+/// let value = fmty::join_once(["hola", "mundo"], " ");
+/// assert_eq!(value.to_string(), "hola mundo");
+///
+/// assert_eq!(value.to_string(), "");
+/// ```
+pub fn join_once<I, S>(iter: I, sep: S) -> JoinOnce<I::IntoIter, S>
+where
+    I: IntoIterator,
+{
+    Join { iter: Once::new(iter.into_iter()), sep }
+}
+
 /// Implements [`Display`] by joining mapped [`Iterator`] results with a
 /// separator between each.
 ///
 /// Unlike <code>[join]\([iter.map(f)](Iterator::map), sep\)</code>, this
 /// function does not require the mapping closure to be [`Clone`].
+///
+/// If [`Clone`] for the [`Iterator`] is too expensive, consider using
+/// [`join_map_once()`].
 ///
 /// # Examples
 ///
@@ -40,6 +73,34 @@ where
     F: Fn(I::Item) -> R,
 {
     JoinMap { iter: iter.into_iter(), sep, map: f }
+}
+
+/// Implements [`Display`] by joining mapped [`Iterator`] results with a
+/// separator between each, at most once.
+///
+/// This is a non-[`Clone`] alternative to [`join_map()`]. It uses interior
+/// mutability to take ownership of the iterator in the first call to
+/// [`Display::fmt()`]. As a result, [`JoinMapOnce`] does not implement
+/// [`Sync`].
+///
+/// # Examples
+///
+/// ```
+/// let value = fmty::join_map_once(["hola", "mundo"], " ", fmty::to_uppercase);
+/// assert_eq!(value.to_string(), "HOLA MUNDO");
+///
+/// assert_eq!(value.to_string(), "");
+/// ```
+pub fn join_map_once<I, S, R, F>(
+    iter: I,
+    sep: S,
+    f: F,
+) -> JoinMapOnce<I::IntoIter, S, F>
+where
+    I: IntoIterator,
+    F: Fn(I::Item) -> R,
+{
+    JoinMap { iter: Once::new(iter.into_iter()), sep, map: f }
 }
 
 /// Implements [`Display`] by joining [`Iterator`] items with `, ` between each.
@@ -88,6 +149,9 @@ pub struct Join<I, S> {
     sep: S,
 }
 
+/// See [`join_once()`].
+pub type JoinOnce<I, S> = Join<Once<I>, S>;
+
 /// See [`join_map()`].
 #[derive(Clone, Copy)]
 pub struct JoinMap<I, S, F> {
@@ -95,6 +159,9 @@ pub struct JoinMap<I, S, F> {
     sep: S,
     map: F,
 }
+
+/// See [`join_map_once()`].
+pub type JoinMapOnce<I, S, F> = JoinMap<Once<I>, S, F>;
 
 /// See [`csv()`].
 pub type Csv<I> = Join<I, &'static str>;
@@ -123,6 +190,26 @@ where
     }
 }
 
+impl<I, S> Display for JoinOnce<I, S>
+where
+    I: Iterator,
+    I::Item: Display,
+    S: Display,
+{
+    fn fmt(&self, f: &mut Formatter) -> Result {
+        if let Some(mut iter) = self.iter.take() {
+            if let Some(item) = iter.next() {
+                write!(f, "{item}")?;
+            }
+
+            for item in iter {
+                write!(f, "{}{item}", self.sep)?;
+            }
+        }
+        Ok(())
+    }
+}
+
 impl<I, S, F, R> Display for JoinMap<I, S, F>
 where
     I: Iterator + Clone,
@@ -141,6 +228,27 @@ where
             write!(f, "{}{}", self.sep, (self.map)(item))?;
         }
 
+        Ok(())
+    }
+}
+
+impl<I, S, F, R> Display for JoinMapOnce<I, S, F>
+where
+    I: Iterator,
+    S: Display,
+    F: Fn(I::Item) -> R,
+    R: Display,
+{
+    fn fmt(&self, f: &mut Formatter) -> Result {
+        if let Some(mut iter) = self.iter.take() {
+            if let Some(item) = iter.next() {
+                write!(f, "{}", (self.map)(item))?;
+            }
+
+            for item in iter {
+                write!(f, "{}{}", self.sep, (self.map)(item))?;
+            }
+        }
         Ok(())
     }
 }
