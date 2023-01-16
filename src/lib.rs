@@ -15,10 +15,6 @@ mod quote;
 mod repeat;
 mod truncate;
 
-/// Private helper types and traits. Not for external use.
-#[doc(hidden)]
-pub mod _priv;
-
 pub use crate::{
     concat::*, convert_case::*, fmt_with::*, format_args as fmt_args, infix::*,
     join::*, quote::*, repeat::*, truncate::*,
