@@ -1,4 +1,4 @@
-use core::{fmt::*, iter};
+use core::fmt::*;
 
 /// Implements [`Display`] by concatenating [`Iterator`] items.
 ///
@@ -27,7 +27,10 @@ where
     iter.into()
 }
 
-/// Implements [`Display`] by concatenating [`Iterator::map()`] results.
+/// Implements [`Display`] by concatenating mapped [`Iterator`] results.
+///
+/// Unlike <code>[concat](concat())\([iter.map(f)](Iterator::map)\)</code>, this
+/// function does not require the mapping closure to be [`Clone`].
 ///
 /// # Examples
 ///
@@ -39,9 +42,9 @@ pub fn concat_map<I, R, F>(iter: I, f: F) -> ConcatMap<I::IntoIter, F>
 where
     I: IntoIterator,
     I::IntoIter: Clone,
-    F: Fn(I::Item) -> R + Clone,
+    F: Fn(I::Item) -> R,
 {
-    concat(iter.into_iter().map(f))
+    ConcatMap { iter: iter.into_iter(), map: f }
 }
 
 /// Implements [`Display`] by concatenating [tuple](prim@tuple) items that may
@@ -67,7 +70,11 @@ pub struct Concat<I> {
 }
 
 /// See [`concat_map()`].
-pub type ConcatMap<I, F> = Concat<iter::Map<I, F>>;
+#[derive(Clone, Copy)]
+pub struct ConcatMap<I, F> {
+    iter: I,
+    map: F,
+}
 
 /// See [`concat_tuple()`].
 #[derive(Clone, Copy)]
@@ -91,6 +98,20 @@ where
     fn fmt(&self, f: &mut Formatter) -> Result {
         for item in self.iter.clone() {
             write!(f, "{item}")?;
+        }
+        Ok(())
+    }
+}
+
+impl<I, F, R> Display for ConcatMap<I, F>
+where
+    I: Iterator + Clone,
+    F: Fn(I::Item) -> R,
+    R: Display,
+{
+    fn fmt(&self, f: &mut Formatter) -> Result {
+        for item in self.iter.clone() {
+            write!(f, "{}", (self.map)(item))?;
         }
         Ok(())
     }

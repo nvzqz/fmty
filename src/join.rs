@@ -1,4 +1,4 @@
-use core::{fmt::*, iter};
+use core::fmt::*;
 
 /// Implements [`Display`] by joining [`Iterator`] items with a separator
 /// between each.
@@ -21,8 +21,11 @@ where
     Join { iter: iter.into_iter(), sep }
 }
 
-/// Implements [`Display`] by joining [`Iterator::map()`] results with a
+/// Implements [`Display`] by joining mapped [`Iterator`] results with a
 /// separator between each.
+///
+/// Unlike <code>[join]\([iter.map(f)](Iterator::map), sep\)</code>, this
+/// function does not require the mapping closure to be [`Clone`].
 ///
 /// # Examples
 ///
@@ -34,9 +37,9 @@ pub fn join_map<I, S, R, F>(iter: I, sep: S, f: F) -> JoinMap<I::IntoIter, S, F>
 where
     I: IntoIterator,
     I::IntoIter: Clone,
-    F: Fn(I::Item) -> R + Clone,
+    F: Fn(I::Item) -> R,
 {
-    join(iter.into_iter().map(f), sep)
+    JoinMap { iter: iter.into_iter(), sep, map: f }
 }
 
 /// Implements [`Display`] by joining [`Iterator`] items with `, ` between each.
@@ -57,8 +60,11 @@ where
     join(iter, ", ")
 }
 
-/// Implements [`Display`] by joining [`Iterator::map()`] results with `, `
+/// Implements [`Display`] by joining mapped [`Iterator`] results with `, `
 /// between each.
+///
+/// Unlike <code>[csv]\([iter.map(f)](Iterator::map)\)</code>, this function
+/// does not require the mapping closure to be [`Clone`].
 ///
 /// # Examples
 ///
@@ -70,9 +76,9 @@ pub fn csv_map<I, R, F>(iter: I, f: F) -> CsvMap<I::IntoIter, F>
 where
     I: IntoIterator,
     I::IntoIter: Clone,
-    F: Fn(I::Item) -> R + Clone,
+    F: Fn(I::Item) -> R,
 {
-    csv(iter.into_iter().map(f))
+    join_map(iter, ", ", f)
 }
 
 /// See [`join()`].
@@ -83,13 +89,18 @@ pub struct Join<I, S> {
 }
 
 /// See [`join_map()`].
-pub type JoinMap<I, S, F> = Join<iter::Map<I, F>, S>;
+#[derive(Clone, Copy)]
+pub struct JoinMap<I, S, F> {
+    iter: I,
+    sep: S,
+    map: F,
+}
 
 /// See [`csv()`].
 pub type Csv<I> = Join<I, &'static str>;
 
 /// See [`csv_map()`].
-pub type CsvMap<I, F> = Csv<iter::Map<I, F>>;
+pub type CsvMap<I, F> = JoinMap<I, &'static str, F>;
 
 impl<I, S> Display for Join<I, S>
 where
@@ -106,6 +117,28 @@ where
 
         for item in iter {
             write!(f, "{}{item}", self.sep)?;
+        }
+
+        Ok(())
+    }
+}
+
+impl<I, S, F, R> Display for JoinMap<I, S, F>
+where
+    I: Iterator + Clone,
+    S: Display,
+    F: Fn(I::Item) -> R,
+    R: Display,
+{
+    fn fmt(&self, f: &mut Formatter) -> Result {
+        let mut iter = self.iter.clone();
+
+        if let Some(item) = iter.next() {
+            write!(f, "{}", (self.map)(item))?;
+        }
+
+        for item in iter {
+            write!(f, "{}{}", self.sep, (self.map)(item))?;
         }
 
         Ok(())
