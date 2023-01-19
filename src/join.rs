@@ -270,11 +270,11 @@ where
         let mut iter = self.iter.clone();
 
         if let Some(item) = iter.next() {
-            write!(f, "{item}")?;
+            write!(f, "{}", item)?;
         }
 
         for item in iter {
-            write!(f, "{}{item}", self.sep)?;
+            write!(f, "{}{}", self.sep, item)?;
         }
 
         Ok(())
@@ -290,11 +290,11 @@ where
     fn fmt(&self, f: &mut Formatter) -> Result {
         if let Some(mut iter) = self.iter.take() {
             if let Some(item) = iter.next() {
-                write!(f, "{item}")?;
+                write!(f, "{}", item)?;
             }
 
             for item in iter {
-                write!(f, "{}{item}", self.sep)?;
+                write!(f, "{}{}", self.sep, item)?;
             }
         }
         Ok(())

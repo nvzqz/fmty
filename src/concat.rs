@@ -153,7 +153,7 @@ where
 {
     fn fmt(&self, f: &mut Formatter) -> Result {
         for item in self.iter.clone() {
-            write!(f, "{item}")?;
+            write!(f, "{}", item)?;
         }
         Ok(())
     }
@@ -181,7 +181,7 @@ where
     fn fmt(&self, f: &mut Formatter) -> Result {
         if let Some(iter) = self.iter.take() {
             for item in iter {
-                write!(f, "{item}")?;
+                write!(f, "{}", item)?;
             }
         }
         Ok(())

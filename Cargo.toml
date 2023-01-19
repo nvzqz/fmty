@@ -9,3 +9,6 @@ categories = ["no-std", "rust-patterns", "value-formatting", "text-processing"]
 keywords = ["display", "format", "string", "text", "util"]
 readme = "README.md"
 publish = false
+
+# 2021 edition and `core::panic::RefUnwindSafe`.
+rust-version = "1.56.0"
