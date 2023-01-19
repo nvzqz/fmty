@@ -260,6 +260,27 @@ pub type CsvMapOnce<I, F> = CsvMap<Once<I>, F>;
 /// See [`csv_tuple()`].
 pub type CsvTuple<T> = JoinTuple<T, &'static str>;
 
+impl<I, S> Debug for Join<I, S>
+where
+    I: Iterator + Clone,
+    I::Item: Debug,
+    S: Display,
+{
+    fn fmt(&self, f: &mut Formatter) -> Result {
+        let mut iter = self.iter.clone();
+
+        if let Some(item) = iter.next() {
+            write!(f, "{:?}", item)?;
+        }
+
+        for item in iter {
+            write!(f, "{}{:?}", self.sep, item)?;
+        }
+
+        Ok(())
+    }
+}
+
 impl<I, S> Display for Join<I, S>
 where
     I: Iterator + Clone,
@@ -281,6 +302,26 @@ where
     }
 }
 
+impl<I, S> Debug for JoinOnce<I, S>
+where
+    I: Iterator,
+    I::Item: Debug,
+    S: Display,
+{
+    fn fmt(&self, f: &mut Formatter) -> Result {
+        if let Some(mut iter) = self.iter.take() {
+            if let Some(item) = iter.next() {
+                write!(f, "{:?}", item)?;
+            }
+
+            for item in iter {
+                write!(f, "{}{:?}", self.sep, item)?;
+            }
+        }
+        Ok(())
+    }
+}
+
 impl<I, S> Display for JoinOnce<I, S>
 where
     I: Iterator,
@@ -297,6 +338,28 @@ where
                 write!(f, "{}{}", self.sep, item)?;
             }
         }
+        Ok(())
+    }
+}
+
+impl<I, S, F, R> Debug for JoinMap<I, S, F>
+where
+    I: Iterator + Clone,
+    S: Display,
+    F: Fn(I::Item) -> R,
+    R: Debug,
+{
+    fn fmt(&self, f: &mut Formatter) -> Result {
+        let mut iter = self.iter.clone();
+
+        if let Some(item) = iter.next() {
+            write!(f, "{:?}", (self.map)(item))?;
+        }
+
+        for item in iter {
+            write!(f, "{}{:?}", self.sep, (self.map)(item))?;
+        }
+
         Ok(())
     }
 }
@@ -323,6 +386,27 @@ where
     }
 }
 
+impl<I, S, F, R> Debug for JoinMapOnce<I, S, F>
+where
+    I: Iterator,
+    S: Display,
+    F: Fn(I::Item) -> R,
+    R: Debug,
+{
+    fn fmt(&self, f: &mut Formatter) -> Result {
+        if let Some(mut iter) = self.iter.take() {
+            if let Some(item) = iter.next() {
+                write!(f, "{:?}", (self.map)(item))?;
+            }
+
+            for item in iter {
+                write!(f, "{}{:?}", self.sep, (self.map)(item))?;
+            }
+        }
+        Ok(())
+    }
+}
+
 impl<I, S, F, R> Display for JoinMapOnce<I, S, F>
 where
     I: Iterator,
@@ -344,9 +428,21 @@ where
     }
 }
 
+impl<S: Display> Debug for JoinTuple<(), S> {
+    fn fmt(&self, _: &mut Formatter) -> Result {
+        Ok(())
+    }
+}
+
 impl<S: Display> Display for JoinTuple<(), S> {
     fn fmt(&self, _: &mut Formatter) -> Result {
         Ok(())
+    }
+}
+
+impl<T0: Debug, S: Display> Debug for JoinTuple<(T0,), S> {
+    fn fmt(&self, f: &mut Formatter) -> Result {
+        write!(f, "{:?}", self.tuple.0)
     }
 }
 
@@ -356,10 +452,28 @@ impl<T0: Display, S: Display> Display for JoinTuple<(T0,), S> {
     }
 }
 
-/// Implements `Display` for `JoinTuple<(T, ...), S>`.
+/// Implements `Debug`/`Display` for `JoinTuple<(T, ...), S>`.
 macro_rules! impl_tuple {
     ($x:ident) => {};
     ($($x:ident),+) => {
+        impl<$($x),+, S> Debug for JoinTuple<($($x,)+), S>
+        where
+            $($x: Debug,)+
+            S: Display,
+        {
+            fn fmt(&self, f: &mut Formatter) -> Result {
+                #[allow(non_snake_case)]
+                let ($($x,)+) = &self.tuple;
+
+                write!(
+                    f,
+                    impl_tuple_fmt_debug!($($x),+),
+                    $($x = $x,)+
+                    sep = self.sep,
+                )
+            }
+        }
+
         impl<$($x),+, S> Display for JoinTuple<($($x,)+), S>
         where
             $($x: Display,)+
@@ -371,7 +485,7 @@ macro_rules! impl_tuple {
 
                 write!(
                     f,
-                    impl_tuple_fmt!($($x),+),
+                    impl_tuple_fmt_display!($($x),+),
                     $($x = $x,)+
                     sep = self.sep,
                 )
@@ -382,8 +496,18 @@ macro_rules! impl_tuple {
     };
 }
 
-/// Creates the format string for `impl_tuple!`.
-macro_rules! impl_tuple_fmt {
+/// Creates the format string for `Debug` in `impl_tuple!`.
+macro_rules! impl_tuple_fmt_debug {
+    ($x:ident $(, $rest:ident)*) => {
+        core::concat!(
+            "{", core::stringify!($x), ":?}",
+            $("{sep}{", core::stringify!($rest), ":?}",)*
+        )
+    };
+}
+
+/// Creates the format string for `Display` in `impl_tuple!`.
+macro_rules! impl_tuple_fmt_display {
     ($x:ident $(, $rest:ident)*) => {
         core::concat!(
             "{", core::stringify!($x), "}",

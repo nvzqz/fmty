@@ -146,6 +146,19 @@ where
     }
 }
 
+impl<I> Debug for Concat<I>
+where
+    I: Iterator + Clone,
+    I::Item: Debug,
+{
+    fn fmt(&self, f: &mut Formatter) -> Result {
+        for item in self.iter.clone() {
+            write!(f, "{:?}", item)?;
+        }
+        Ok(())
+    }
+}
+
 impl<I> Display for Concat<I>
 where
     I: Iterator + Clone,
@@ -154,6 +167,20 @@ where
     fn fmt(&self, f: &mut Formatter) -> Result {
         for item in self.iter.clone() {
             write!(f, "{}", item)?;
+        }
+        Ok(())
+    }
+}
+
+impl<I, F, R> Debug for ConcatMap<I, F>
+where
+    I: Iterator + Clone,
+    F: Fn(I::Item) -> R,
+    R: Debug,
+{
+    fn fmt(&self, f: &mut Formatter) -> Result {
+        for item in self.iter.clone() {
+            write!(f, "{:?}", (self.map)(item))?;
         }
         Ok(())
     }
@@ -173,6 +200,21 @@ where
     }
 }
 
+impl<I> Debug for ConcatOnce<I>
+where
+    I: Iterator,
+    I::Item: Debug,
+{
+    fn fmt(&self, f: &mut Formatter) -> Result {
+        if let Some(iter) = self.iter.take() {
+            for item in iter {
+                write!(f, "{:?}", item)?;
+            }
+        }
+        Ok(())
+    }
+}
+
 impl<I> Display for ConcatOnce<I>
 where
     I: Iterator,
@@ -182,6 +224,22 @@ where
         if let Some(iter) = self.iter.take() {
             for item in iter {
                 write!(f, "{}", item)?;
+            }
+        }
+        Ok(())
+    }
+}
+
+impl<I, F, R> Debug for ConcatMapOnce<I, F>
+where
+    I: Iterator + Clone,
+    F: Fn(I::Item) -> R,
+    R: Debug,
+{
+    fn fmt(&self, f: &mut Formatter) -> Result {
+        if let Some(iter) = self.iter.take() {
+            for item in iter {
+                write!(f, "{:?}", (self.map)(item))?;
             }
         }
         Ok(())
@@ -204,6 +262,13 @@ where
     }
 }
 
+impl Debug for ConcatTuple<()> {
+    #[inline]
+    fn fmt(&self, _: &mut Formatter) -> Result {
+        Ok(())
+    }
+}
+
 impl Display for ConcatTuple<()> {
     #[inline]
     fn fmt(&self, _: &mut Formatter) -> Result {
@@ -211,10 +276,25 @@ impl Display for ConcatTuple<()> {
     }
 }
 
-/// Implements `Display` for `ConcatTuple<(T, ...)>`.
+/// Implements `Debug`/`Display` for `ConcatTuple<(T, ...)>`.
 macro_rules! impl_tuple {
     () => {};
     ($($x:ident),+) => {
+        impl<$($x),+> Debug for ConcatTuple<($($x,)+)>
+        where
+            $($x: Debug),+
+        {
+            fn fmt(&self, f: &mut Formatter) -> Result {
+                #[allow(non_snake_case)]
+                let ($($x,)+) = &self.0;
+                write!(
+                    f,
+                    core::concat!($("{", core::stringify!($x), ":?}",)+),
+                    $($x = $x),+
+                )
+            }
+        }
+
         impl<$($x),+> Display for ConcatTuple<($($x,)+)>
         where
             $($x: Display),+

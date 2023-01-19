@@ -53,10 +53,32 @@ pub struct RepeatWith<F> {
     n: usize,
 }
 
+impl<T: Debug> Debug for Repeat<T> {
+    fn fmt(&self, f: &mut Formatter) -> Result {
+        for _ in 0..self.n {
+            write!(f, "{:?}", self.value)?;
+        }
+        Ok(())
+    }
+}
+
 impl<T: Display> Display for Repeat<T> {
     fn fmt(&self, f: &mut Formatter) -> Result {
         for _ in 0..self.n {
             write!(f, "{}", self.value)?;
+        }
+        Ok(())
+    }
+}
+
+impl<F, R> Debug for RepeatWith<F>
+where
+    F: Fn() -> R,
+    R: Debug,
+{
+    fn fmt(&self, f: &mut Formatter) -> Result {
+        for _ in 0..self.n {
+            write!(f, "{:?}", (self.f)())?;
         }
         Ok(())
     }
