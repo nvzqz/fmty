@@ -9,6 +9,7 @@ extern crate alloc;
 mod macros;
 
 mod concat;
+mod cond;
 mod convert_case;
 mod fmt_with;
 mod format_args;
@@ -20,6 +21,6 @@ mod repeat;
 mod truncate;
 
 pub use crate::{
-    concat::*, convert_case::*, fmt_with::*, format_args as fmt_args, infix::*,
-    join::*, quote::*, repeat::*, truncate::*,
+    concat::*, cond::*, convert_case::*, fmt_with::*, format_args as fmt_args,
+    infix::*, join::*, quote::*, repeat::*, truncate::*,
 };

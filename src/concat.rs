@@ -10,19 +10,15 @@ use crate::once::Once;
 /// If [`Clone`] for the [`Iterator`] is too expensive, consider using
 /// [`concat_once()`].
 ///
+/// Although this can be used to conditionally write an [`Option`] (because it
+/// implements [`IntoIterator`]), consider using [`cond_option()`](crate::cond_option)
+/// for this instead.
+///
 /// # Examples
 ///
 /// ```
 /// let value = fmty::concat(["hola", "mundo"]);
 /// assert_eq!(value.to_string(), "holamundo");
-/// ```
-///
-/// This can also be used to conditionally write [`Option`] because it
-/// implements [`IntoIterator`].
-///
-/// ```
-/// assert_eq!(fmty::concat(Some("hola")).to_string(), "hola");
-/// assert_eq!(fmty::concat(None::<&str>).to_string(), "");
 /// ```
 pub fn concat<I>(iter: I) -> Concat<I::IntoIter>
 where
