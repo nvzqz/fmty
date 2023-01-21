@@ -20,6 +20,19 @@ mod quote;
 mod repeat;
 mod truncate;
 
+/// Types defined by this crate.
+///
+/// These are provided in a separate module in order to make the crate root's
+/// documentation easier to navigate.
+pub mod types {
+    #[doc(inline)]
+    pub use crate::{
+        concat::types::*, cond::types::*, convert_case::types::*,
+        fmt_with::types::*, infix::types::*, join::types::*, repeat::types::*,
+        truncate::types::*,
+    };
+}
+
 pub use crate::{
     concat::*, cond::*, convert_case::*, fmt_with::*, format_args as fmt_args,
     infix::*, join::*, quote::*, repeat::*, truncate::*,

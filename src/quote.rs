@@ -1,7 +1,7 @@
 #[allow(unused)]
 use core::fmt::Display;
 
-use crate::{infix, Infix};
+use crate::{infix, types::Infix};
 
 /// Places a value between `'`.
 ///

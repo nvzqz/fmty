@@ -2,6 +2,56 @@ use core::fmt::*;
 
 use crate::once::Once;
 
+pub(crate) mod types {
+    #[allow(unused)]
+    use super::*;
+
+    /// See [`join()`].
+    #[derive(Clone, Copy)]
+    pub struct Join<I, S> {
+        pub(super) iter: I,
+        pub(super) sep: S,
+    }
+
+    /// See [`join_once()`].
+    pub type JoinOnce<I, S> = Join<Once<I>, S>;
+
+    /// See [`join_map()`].
+    #[derive(Clone, Copy)]
+    pub struct JoinMap<I, S, F> {
+        pub(super) iter: I,
+        pub(super) sep: S,
+        pub(super) map: F,
+    }
+
+    /// See [`join_map_once()`].
+    pub type JoinMapOnce<I, S, F> = JoinMap<Once<I>, S, F>;
+
+    /// See [`join_tuple()`].
+    #[derive(Clone, Copy)]
+    pub struct JoinTuple<T, S> {
+        pub(super) tuple: T,
+        pub(super) sep: S,
+    }
+
+    /// See [`csv()`].
+    pub type Csv<I> = Join<I, &'static str>;
+
+    /// See [`csv_once()`].
+    pub type CsvOnce<I> = Csv<Once<I>>;
+
+    /// See [`csv_map()`].
+    pub type CsvMap<I, F> = JoinMap<I, &'static str, F>;
+
+    /// See [`csv_map_once()`].
+    pub type CsvMapOnce<I, F> = CsvMap<Once<I>, F>;
+
+    /// See [`csv_tuple()`].
+    pub type CsvTuple<T> = JoinTuple<T, &'static str>;
+}
+
+use types::*;
+
 /// Concatenates [`Iterator`] items with a separator between each.
 ///
 /// This may be used as a non-allocating alternative to
@@ -209,49 +259,6 @@ where
 pub fn csv_tuple<T>(tuple: T) -> CsvTuple<T> {
     join_tuple(tuple, ", ")
 }
-
-/// See [`join()`].
-#[derive(Clone, Copy)]
-pub struct Join<I, S> {
-    iter: I,
-    sep: S,
-}
-
-/// See [`join_once()`].
-pub type JoinOnce<I, S> = Join<Once<I>, S>;
-
-/// See [`join_map()`].
-#[derive(Clone, Copy)]
-pub struct JoinMap<I, S, F> {
-    iter: I,
-    sep: S,
-    map: F,
-}
-
-/// See [`join_map_once()`].
-pub type JoinMapOnce<I, S, F> = JoinMap<Once<I>, S, F>;
-
-/// See [`join_tuple()`].
-#[derive(Clone, Copy)]
-pub struct JoinTuple<T, S> {
-    tuple: T,
-    sep: S,
-}
-
-/// See [`csv()`].
-pub type Csv<I> = Join<I, &'static str>;
-
-/// See [`csv_once()`].
-pub type CsvOnce<I> = Csv<Once<I>>;
-
-/// See [`csv_map()`].
-pub type CsvMap<I, F> = JoinMap<I, &'static str, F>;
-
-/// See [`csv_map_once()`].
-pub type CsvMapOnce<I, F> = CsvMap<Once<I>, F>;
-
-/// See [`csv_tuple()`].
-pub type CsvTuple<T> = JoinTuple<T, &'static str>;
 
 impl<I, S> Debug for Join<I, S>
 where

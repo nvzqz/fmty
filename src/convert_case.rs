@@ -1,5 +1,36 @@
 use core::fmt::*;
 
+pub(crate) mod types {
+    #[allow(unused)]
+    use super::*;
+
+    /// See [`to_uppercase()`].
+    #[derive(Clone, Copy)]
+    pub struct ToUppercase<T> {
+        pub(super) value: T,
+    }
+
+    /// See [`to_lowercase()`].
+    #[derive(Clone, Copy)]
+    pub struct ToLowercase<T> {
+        pub(super) value: T,
+    }
+
+    /// See [`to_ascii_uppercase()`].
+    #[derive(Clone, Copy)]
+    pub struct ToAsciiUppercase<T> {
+        pub(super) value: T,
+    }
+
+    /// See [`to_ascii_lowercase()`].
+    #[derive(Clone, Copy)]
+    pub struct ToAsciiLowercase<T> {
+        pub(super) value: T,
+    }
+}
+
+use types::*;
+
 /// Converts to uppercase.
 ///
 /// This may be used as a non-allocating alternative to
@@ -44,30 +75,6 @@ pub fn to_ascii_uppercase<T>(value: T) -> ToAsciiUppercase<T> {
 /// ```
 pub fn to_ascii_lowercase<T>(value: T) -> ToAsciiLowercase<T> {
     ToAsciiLowercase { value }
-}
-
-/// See [`to_uppercase()`].
-#[derive(Clone, Copy)]
-pub struct ToUppercase<T> {
-    value: T,
-}
-
-/// See [`to_lowercase()`].
-#[derive(Clone, Copy)]
-pub struct ToLowercase<T> {
-    value: T,
-}
-
-/// See [`to_ascii_uppercase()`].
-#[derive(Clone, Copy)]
-pub struct ToAsciiUppercase<T> {
-    value: T,
-}
-
-/// See [`to_ascii_lowercase()`].
-#[derive(Clone, Copy)]
-pub struct ToAsciiLowercase<T> {
-    value: T,
 }
 
 /// Single writer for ASCII to reduce code generation.

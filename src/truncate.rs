@@ -1,5 +1,19 @@
 use core::fmt::*;
 
+pub(crate) mod types {
+    #[allow(unused)]
+    use super::*;
+
+    /// See [`truncate_chars()`].
+    #[derive(Clone, Copy)]
+    pub struct TruncateChars<T> {
+        pub(super) value: T,
+        pub(super) len: usize,
+    }
+}
+
+use types::*;
+
 /// Shortens to `len` [`char`]s.
 ///
 /// This may be used as a [`char`]-based alternative to
@@ -14,13 +28,6 @@ use core::fmt::*;
 /// ```
 pub fn truncate_chars<T>(value: T, len: usize) -> TruncateChars<T> {
     TruncateChars { value, len }
-}
-
-/// See [`truncate_chars()`].
-#[derive(Clone, Copy)]
-pub struct TruncateChars<T> {
-    value: T,
-    len: usize,
 }
 
 impl<T: Display> Display for TruncateChars<T> {

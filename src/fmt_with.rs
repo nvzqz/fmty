@@ -1,5 +1,18 @@
 use core::fmt::*;
 
+pub(crate) mod types {
+    #[allow(unused)]
+    use super::*;
+
+    /// See [`fmt_with()`].
+    #[derive(Clone, Copy)]
+    pub struct FmtWith<F = fn(&mut Formatter) -> Result> {
+        pub(super) fmt: F,
+    }
+}
+
+use types::*;
+
 /// Formats via a closure.
 ///
 /// # Examples
@@ -18,12 +31,6 @@ use core::fmt::*;
 /// ```
 pub fn fmt_with<F: Fn(&mut Formatter) -> Result>(fmt: F) -> FmtWith<F> {
     fmt.into()
-}
-
-/// See [`fmt_with()`].
-#[derive(Clone, Copy)]
-pub struct FmtWith<F = fn(&mut Formatter) -> Result> {
-    fmt: F,
 }
 
 impl<F: Fn(&mut Formatter) -> Result> From<F> for FmtWith<F> {

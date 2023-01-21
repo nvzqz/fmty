@@ -1,5 +1,24 @@
 use core::fmt::*;
 
+pub(crate) mod types {
+    #[allow(unused)]
+    use super::*;
+
+    /// See [`cond()`], [`cond_option()`].
+    #[derive(Clone, Copy)]
+    pub struct Cond<T> {
+        pub(super) value: Option<T>,
+    }
+
+    /// See [`cond_with()`], [`cond_with_option()`].
+    #[derive(Clone, Copy)]
+    pub struct CondWith<F> {
+        pub(super) make_value: F,
+    }
+}
+
+use types::*;
+
 /// Conditionally writes a value.
 ///
 /// # Examples
@@ -56,18 +75,6 @@ where
     F: Fn() -> Option<R>,
 {
     CondWith { make_value: f }
-}
-
-/// See [`cond()`], [`cond_option()`].
-#[derive(Clone, Copy)]
-pub struct Cond<T> {
-    value: Option<T>,
-}
-
-/// See [`cond_with()`], [`cond_with_option()`].
-#[derive(Clone, Copy)]
-pub struct CondWith<F> {
-    make_value: F,
 }
 
 impl<T: Debug> Debug for Cond<T> {

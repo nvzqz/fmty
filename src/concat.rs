@@ -2,6 +2,36 @@ use core::fmt::*;
 
 use crate::once::Once;
 
+pub(crate) mod types {
+    #[allow(unused)]
+    use super::*;
+
+    /// See [`concat()`].
+    #[derive(Clone, Copy)]
+    pub struct Concat<I> {
+        pub(super) iter: I,
+    }
+
+    /// See [`concat_once()`].
+    pub type ConcatOnce<I> = Concat<Once<I>>;
+
+    /// See [`concat_map()`].
+    #[derive(Clone, Copy)]
+    pub struct ConcatMap<I, F> {
+        pub(super) iter: I,
+        pub(super) map: F,
+    }
+
+    /// See [`concat_map_once()`].
+    pub type ConcatMapOnce<I, F> = ConcatMap<Once<I>, F>;
+
+    /// See [`concat_tuple()`].
+    #[derive(Clone, Copy)]
+    pub struct ConcatTuple<T>(pub(super) T);
+}
+
+use types::*;
+
 /// Concatenates [`Iterator`] items.
 ///
 /// This is a non-allocating alternative to
@@ -106,29 +136,6 @@ where
 pub fn concat_tuple<T>(tuple: T) -> ConcatTuple<T> {
     ConcatTuple(tuple)
 }
-
-/// See [`concat()`].
-#[derive(Clone, Copy)]
-pub struct Concat<I> {
-    iter: I,
-}
-
-/// See [`concat_once()`].
-pub type ConcatOnce<I> = Concat<Once<I>>;
-
-/// See [`concat_map()`].
-#[derive(Clone, Copy)]
-pub struct ConcatMap<I, F> {
-    iter: I,
-    map: F,
-}
-
-/// See [`concat_map_once()`].
-pub type ConcatMapOnce<I, F> = ConcatMap<Once<I>, F>;
-
-/// See [`concat_tuple()`].
-#[derive(Clone, Copy)]
-pub struct ConcatTuple<T>(T);
 
 impl<I> From<I> for Concat<I::IntoIter>
 where
@@ -371,7 +378,7 @@ mod tests {
         rc::{Rc, Weak},
         string::ToString,
     };
-    use core::{fmt::Display, iter, mem};
+    use core::{iter, mem};
 
     use super::*;
 

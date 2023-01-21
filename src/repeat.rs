@@ -1,5 +1,28 @@
 use core::fmt::*;
 
+pub(crate) mod types {
+    #[allow(unused)]
+    use super::*;
+
+    /// See [`repeat()`].
+    #[derive(Clone, Copy)]
+    pub struct Repeat<T> {
+        pub(super) value: T,
+        pub(super) n: usize,
+    }
+
+    /// See [`repeat_with()`].
+    #[derive(Clone, Copy)]
+    pub struct RepeatWith<F> {
+        // Although this could alias `Concat<iter::Take<iter::RepeatWith<F>>>`,
+        // it would not be able to implement `Copy` because `Take` doesn't.
+        pub(super) f: F,
+        pub(super) n: usize,
+    }
+}
+
+use types::*;
+
 /// Repeats a value `n` times.
 ///
 /// This is a non-allocating alternative to
@@ -35,22 +58,6 @@ pub fn repeat<T>(value: T, n: usize) -> Repeat<T> {
 /// ```
 pub fn repeat_with<F>(n: usize, f: F) -> RepeatWith<F> {
     RepeatWith { n, f }
-}
-
-/// See [`repeat()`].
-#[derive(Clone, Copy)]
-pub struct Repeat<T> {
-    value: T,
-    n: usize,
-}
-
-/// See [`repeat_with()`].
-#[derive(Clone, Copy)]
-pub struct RepeatWith<F> {
-    // Although this could alias `Concat<iter::Take<iter::RepeatWith<F>>>`, it
-    // would not be able to implement `Copy` because `Take` doesn't.
-    f: F,
-    n: usize,
 }
 
 impl<T: Debug> Debug for Repeat<T> {
