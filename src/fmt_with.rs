@@ -1,6 +1,6 @@
 use core::fmt::*;
 
-/// Implements [`Debug`]/[`Display`] via a closure.
+/// Formats via a closure.
 ///
 /// # Examples
 ///

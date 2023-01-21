@@ -1,6 +1,6 @@
 use core::fmt::*;
 
-/// Converts the [`Display`] formatting to uppercase.
+/// Converts to uppercase.
 ///
 /// This may be used as a non-allocating alternative to
 /// [`str::to_uppercase()`](https://doc.rust-lang.org/std/primitive.str.html#method.to_uppercase).
@@ -8,7 +8,7 @@ pub fn to_uppercase<T>(value: T) -> ToUppercase<T> {
     ToUppercase { value }
 }
 
-/// Converts the [`Display`] formatting to lowercase.
+/// Converts to lowercase.
 ///
 /// This may be used as a non-allocating alternative to
 /// [`str::to_lowercase()`](https://doc.rust-lang.org/std/primitive.str.html#method.to_lowercase).
@@ -16,7 +16,7 @@ pub fn to_lowercase<T>(value: T) -> ToLowercase<T> {
     ToLowercase { value }
 }
 
-/// Converts the [`Display`] formatting to ASCII uppercase.
+/// Converts to ASCII uppercase.
 ///
 /// This may be used as a non-allocating alternative to
 /// [`str::to_ascii_uppercase()`](https://doc.rust-lang.org/std/primitive.str.html#method.to_ascii_uppercase).
@@ -31,7 +31,7 @@ pub fn to_ascii_uppercase<T>(value: T) -> ToAsciiUppercase<T> {
     ToAsciiUppercase { value }
 }
 
-/// Converts the [`Display`] formatting to ASCII lowercase.
+/// Converts to ASCII lowercase.
 ///
 /// This may be used as a non-allocating alternative to
 /// [`str::to_ascii_lowercase()`](https://doc.rust-lang.org/std/primitive.str.html#method.to_ascii_lowercase).

@@ -3,7 +3,7 @@ use core::fmt::Display;
 
 use crate::{infix, Infix};
 
-/// Implements [`Display`] by placing a value between `'`.
+/// Places a value between `'`.
 ///
 /// # Examples
 ///
@@ -16,7 +16,7 @@ pub fn quote_single<T>(value: T) -> Infix<T, char> {
     infix('\'', value, '\'')
 }
 
-/// Implements [`Display`] by placing a value between `"`.
+/// Places a value between `"`.
 ///
 /// # Examples
 ///
@@ -29,7 +29,7 @@ pub fn quote_double<T>(value: T) -> Infix<T, char> {
     infix('"', value, '"')
 }
 
-/// Implements [`Display`] by placing a value between <code>`</code>.
+/// Places a value between <code>`</code>.
 ///
 /// # Examples
 ///
@@ -42,7 +42,7 @@ pub fn quote_backtick<T: Display>(value: T) -> Infix<T, char> {
     infix('`', value, '`')
 }
 
-/// Implements [`Display`] by placing a value between `‘` and `’`.
+/// Places a value between `‘` and `’`.
 ///
 /// # Examples
 ///
@@ -55,7 +55,7 @@ pub fn quote_directed_single<T>(value: T) -> Infix<T, char> {
     infix('‘', value, '’')
 }
 
-/// Implements [`Display`] by placing a value between `“` and `”`.
+/// Places a value between `“` and `”`.
 ///
 /// # Examples
 ///
@@ -68,7 +68,7 @@ pub fn quote_directed_double<T>(value: T) -> Infix<T, char> {
     infix('“', value, '”')
 }
 
-/// Implements [`Display`] by placing a value between [`‚` and `‘`](https://en.wikipedia.org/wiki/Quotation_mark#German).
+/// Places a value between [`‚` and `‘`](https://en.wikipedia.org/wiki/Quotation_mark#German).
 ///
 /// # Examples
 ///
@@ -81,7 +81,7 @@ pub fn quote_low_single<T>(value: T) -> Infix<T, char> {
     infix('‚', value, '‘')
 }
 
-/// Implements [`Display`] by placing a value between [`„` and `“`](https://en.wikipedia.org/wiki/Quotation_mark#German).
+/// Places a value between [`„` and `“`](https://en.wikipedia.org/wiki/Quotation_mark#German).
 ///
 /// # Examples
 ///
@@ -94,7 +94,7 @@ pub fn quote_low_double<T>(value: T) -> Infix<T, char> {
     infix('„', value, '“')
 }
 
-/// Implements [`Display`] by placing a value between [`‹` and `›`](https://en.wikipedia.org/wiki/Guillemet).
+/// Places a value between [`‹` and `›`](https://en.wikipedia.org/wiki/Guillemet).
 ///
 /// # Examples
 ///
@@ -107,7 +107,7 @@ pub fn quote_guillemet_single<T>(value: T) -> Infix<T, char> {
     infix('‹', value, '›')
 }
 
-/// Implements [`Display`] by placing a value between [`«` and `»`](https://en.wikipedia.org/wiki/Guillemet).
+/// Places a value between [`«` and `»`](https://en.wikipedia.org/wiki/Guillemet).
 ///
 /// # Examples
 ///
@@ -120,7 +120,7 @@ pub fn quote_guillemet_double<T>(value: T) -> Infix<T, char> {
     infix('«', value, '»')
 }
 
-/// Implements [`Display`] by placing a value between [`「` and `」`](https://en.wikipedia.org/wiki/Quotation_mark#Chinese,_Japanese_and_Korean).
+/// Places a value between [`「` and `」`](https://en.wikipedia.org/wiki/Quotation_mark#Chinese,_Japanese_and_Korean).
 ///
 /// # Examples
 ///
@@ -133,7 +133,7 @@ pub fn quote_cjk<T>(value: T) -> Infix<T, char> {
     infix('「', value, '」')
 }
 
-/// Implements [`Display`] by placing a value between [`﹁` and `﹂`](https://en.wikipedia.org/wiki/Quotation_mark#Chinese,_Japanese_and_Korean).
+/// Places a value between [`﹁` and `﹂`](https://en.wikipedia.org/wiki/Quotation_mark#Chinese,_Japanese_and_Korean).
 ///
 /// # Examples
 ///
@@ -146,7 +146,7 @@ pub fn quote_cjk_vert<T>(value: T) -> Infix<T, char> {
     infix('﹁', value, '﹂')
 }
 
-/// Implements [`Display`] by placing a value between [`『` and `』`](https://en.wikipedia.org/wiki/Quotation_mark#Chinese,_Japanese_and_Korean).
+/// Places a value between [`『` and `』`](https://en.wikipedia.org/wiki/Quotation_mark#Chinese,_Japanese_and_Korean).
 ///
 /// # Examples
 ///
@@ -159,7 +159,7 @@ pub fn quote_cjk_white<T>(value: T) -> Infix<T, char> {
     infix('『', value, '』')
 }
 
-/// Implements [`Display`] by placing a value between [`﹃` and `﹄`](https://en.wikipedia.org/wiki/Quotation_mark#Chinese,_Japanese_and_Korean).
+/// Places a value between [`﹃` and `﹄`](https://en.wikipedia.org/wiki/Quotation_mark#Chinese,_Japanese_and_Korean).
 ///
 /// # Examples
 ///

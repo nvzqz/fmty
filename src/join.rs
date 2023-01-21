@@ -2,8 +2,7 @@ use core::fmt::*;
 
 use crate::once::Once;
 
-/// Implements [`Display`] by joining [`Iterator`] items with a separator
-/// between each.
+/// Concatenates [`Iterator`] items with a separator between each.
 ///
 /// This may be used as a non-allocating alternative to
 /// [`[T]::join()`](https://doc.rust-lang.org/std/primitive.slice.html#method.join)
@@ -26,8 +25,7 @@ where
     Join { iter: iter.into_iter(), sep }
 }
 
-/// Implements [`Display`] by joining [`Iterator`] items with a separator
-/// between each, at most once.
+/// Concatenates [`Iterator`] items with a separator between each, at most once.
 ///
 /// This is a non-[`Clone`] alternative to [`join()`]. It uses interior
 /// mutability to take ownership of the iterator in the first call to
@@ -51,8 +49,7 @@ where
     Join { iter: Once::new(iter.into_iter()), sep }
 }
 
-/// Implements [`Display`] by joining mapped [`Iterator`] results with a
-/// separator between each.
+/// Concatenates mapped [`Iterator`] results with a separator between each.
 ///
 /// Unlike <code>[join]\([iter.map(f)](Iterator::map), sep\)</code>, this
 /// function does not require the mapping closure to be [`Clone`].
@@ -75,8 +72,8 @@ where
     JoinMap { iter: iter.into_iter(), sep, map: f }
 }
 
-/// Implements [`Display`] by joining mapped [`Iterator`] results with a
-/// separator between each, at most once.
+/// Concatenates mapped [`Iterator`] results with a separator between each, at
+/// most once.
 ///
 /// This is a non-[`Clone`] alternative to [`join_map()`]. It uses interior
 /// mutability to take ownership of the iterator in the first call to
@@ -103,8 +100,7 @@ where
     JoinMap { iter: Once::new(iter.into_iter()), sep, map: f }
 }
 
-/// Implements [`Display`] by joining [tuple](prim@tuple) items with a separator
-/// between each.
+/// Concatenates [tuple](prim@tuple) items with a separator between each.
 ///
 /// # Examples
 ///
@@ -116,7 +112,7 @@ pub fn join_tuple<T, S>(tuple: T, sep: S) -> JoinTuple<T, S> {
     JoinTuple { tuple, sep }
 }
 
-/// Implements [`Display`] by joining [`Iterator`] items with `, ` between each.
+/// Concatenates [`Iterator`] items with `, ` between each.
 ///
 /// This is equivalent to <code>[join]\(iter, \", \"\)</code>.
 ///
@@ -137,8 +133,7 @@ where
     join(iter, ", ")
 }
 
-/// Implements [`Display`] by joining [`Iterator`] items with `, ` between each,
-/// at most once.
+/// Concatenates [`Iterator`] items with `, ` between each, at most once.
 ///
 /// This is equivalent to <code>[join_once]\(iter, \", \"\)</code>.
 ///
@@ -161,8 +156,7 @@ where
     join_once(iter, ", ")
 }
 
-/// Implements [`Display`] by joining mapped [`Iterator`] results with `, `
-/// between each.
+/// Concatenates mapped [`Iterator`] results with `, ` between each.
 ///
 /// Unlike <code>[csv]\([iter.map(f)](Iterator::map)\)</code>, this function
 /// does not require the mapping closure to be [`Clone`].
@@ -185,8 +179,8 @@ where
     join_map(iter, ", ", f)
 }
 
-/// Implements [`Display`] by joining mapped [`Iterator`] results with `, `
-/// between each, at most once.
+/// Concatenates mapped [`Iterator`] results with `, ` between each, at most
+/// once.
 ///
 /// # Examples
 ///
@@ -204,8 +198,7 @@ where
     join_map_once(iter, ", ", f)
 }
 
-/// Implements [`Display`] by joining [tuple](prim@tuple) items with `, `
-/// between each.
+/// Concatenates [tuple](prim@tuple) items with `, ` between each.
 ///
 /// # Examples
 ///

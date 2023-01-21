@@ -1,6 +1,6 @@
 use core::fmt::*;
 
-/// Implements [`Display`] by repeating a value `n` times.
+/// Repeats a value `n` times.
 ///
 /// This is a non-allocating alternative to
 /// [`[T]::repeat()`](https://doc.rust-lang.org/std/primitive.slice.html#method.repeat) or
@@ -16,7 +16,7 @@ pub fn repeat<T>(value: T, n: usize) -> Repeat<T> {
     Repeat { value, n }
 }
 
-/// Implements [`Display`] by invoking a closure `n` times.
+/// Repeats `n` results of a closure.
 ///
 /// # Examples
 ///

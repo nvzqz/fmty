@@ -2,7 +2,7 @@ use core::fmt::*;
 
 use crate::once::Once;
 
-/// Implements [`Display`] by concatenating [`Iterator`] items.
+/// Concatenates [`Iterator`] items.
 ///
 /// This is a non-allocating alternative to
 /// [`[T]::concat()`](https://doc.rust-lang.org/std/primitive.slice.html#method.concat).
@@ -32,7 +32,7 @@ where
     iter.into()
 }
 
-/// Implements [`Display`] by concatenating [`Iterator`] items, at most once.
+/// Concatenates [`Iterator`] items, at most once.
 ///
 /// This is a non-[`Clone`] alternative to [`concat()`]. It uses interior
 /// mutability to take ownership of the iterator in the first call to
@@ -50,7 +50,7 @@ pub fn concat_once<I: IntoIterator>(iter: I) -> ConcatOnce<I::IntoIter> {
     Concat { iter: Once::new(iter.into_iter()) }
 }
 
-/// Implements [`Display`] by concatenating mapped [`Iterator`] results.
+/// Concatenates mapped [`Iterator`] results.
 ///
 /// Unlike <code>[concat](concat())\([iter.map(f)](Iterator::map)\)</code>, this
 /// function does not require the mapping closure to be [`Clone`].
@@ -73,8 +73,7 @@ where
     ConcatMap { iter: iter.into_iter(), map: f }
 }
 
-/// Implements [`Display`] by concatenating mapped [`Iterator`] results, at most
-/// once.
+/// Concatenates mapped [`Iterator`] results, at most once.
 ///
 /// This is a non-[`Clone`] alternative to [`concat_map()`]. It uses interior
 /// mutability to take ownership of the iterator in the first call to
@@ -97,8 +96,7 @@ where
     ConcatMap { iter: Once::new(iter.into_iter()), map: f }
 }
 
-/// Implements [`Display`] by concatenating [tuple](prim@tuple) items that may
-/// be different types.
+/// Concatenates [tuple](prim@tuple) items that may be different types.
 ///
 /// This function is limited to tuples of length 12. Consider using
 /// [`concat!`](crate::concat!) if this limit is too low.
@@ -316,7 +314,7 @@ macro_rules! impl_tuple {
 
 impl_tuple!(T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11);
 
-/// Implements [`Display`] by concatenating items that may be different types.
+/// Concatenates items that may be different types.
 ///
 /// This is like [`concat_tuple()`] but with no length limit.
 ///

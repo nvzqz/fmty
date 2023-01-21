@@ -1,7 +1,4 @@
-#[allow(unused)]
-use core::fmt::Display;
-
-/// Implements [`Display`] by placing a value between `left` and `right`.
+/// Places a value between `left` and `right`.
 pub fn infix<T, L, R>(left: L, value: T, right: R) -> Infix<T, L, R> {
     crate::concat_tuple((left, value, right))
 }

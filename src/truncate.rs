@@ -1,6 +1,6 @@
 use core::fmt::*;
 
-/// Implements [`Display`] up to `len` [`char`]s.
+/// Shortens to `len` [`char`]s.
 ///
 /// This may be used as a [`char`]-based alternative to
 /// [`str[..len]`](https://doc.rust-lang.org/std/primitive.str.html#method.index)
