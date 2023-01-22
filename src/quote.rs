@@ -73,11 +73,11 @@ pub fn quote_directed_double<T>(value: T) -> Infix<T, char> {
 /// # Examples
 ///
 /// ```
-/// let value = fmty::quote_low_single("Wie geht's?");
+/// let value = fmty::quote_de_single("Wie geht's?");
 ///
 /// assert_eq!(value.to_string(), "‚Wie geht's?‘");
 /// ```
-pub fn quote_low_single<T>(value: T) -> Infix<T, char> {
+pub fn quote_de_single<T>(value: T) -> Infix<T, char> {
     infix('‚', value, '‘')
 }
 
@@ -86,11 +86,11 @@ pub fn quote_low_single<T>(value: T) -> Infix<T, char> {
 /// # Examples
 ///
 /// ```
-/// let value = fmty::quote_low_double("Perfekt!");
+/// let value = fmty::quote_de_double("Perfekt!");
 ///
 /// assert_eq!(value.to_string(), "„Perfekt!“");
 /// ```
-pub fn quote_low_double<T>(value: T) -> Infix<T, char> {
+pub fn quote_de_double<T>(value: T) -> Infix<T, char> {
     infix('„', value, '“')
 }
 
