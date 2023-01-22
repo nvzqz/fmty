@@ -47,11 +47,11 @@ pub fn quote_backtick<T: Display>(value: T) -> Infix<T, char> {
 /// # Examples
 ///
 /// ```
-/// let value = fmty::quote_directed_single("supposedly");
+/// let value = fmty::quote_curly_single("supposedly");
 ///
 /// assert_eq!(value.to_string(), "‘supposedly’");
 /// ```
-pub fn quote_directed_single<T>(value: T) -> Infix<T, char> {
+pub fn quote_curly_single<T>(value: T) -> Infix<T, char> {
     infix('‘', value, '’')
 }
 
@@ -60,11 +60,11 @@ pub fn quote_directed_single<T>(value: T) -> Infix<T, char> {
 /// # Examples
 ///
 /// ```
-/// let value = fmty::quote_directed_double("Stunning!");
+/// let value = fmty::quote_curly_double("Stunning!");
 ///
 /// assert_eq!(value.to_string(), "“Stunning!”");
 /// ```
-pub fn quote_directed_double<T>(value: T) -> Infix<T, char> {
+pub fn quote_curly_double<T>(value: T) -> Infix<T, char> {
     infix('“', value, '”')
 }
 
