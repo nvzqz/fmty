@@ -4,6 +4,7 @@ Composable [`core::fmt`](https://doc.rust-lang.org/core/fmt/) utilities, brought
 to you by [Nikolai Vazquez](https://hachyderm.io/@nikolai).
 
 If you find this crate useful, consider
+[starring it](https://github.com/nvzqz/fmty) as well as
 [sponsoring](https://github.com/sponsors/nvzqz) or
 [donating once](https://paypal.me/nvzqz). 💖
 
