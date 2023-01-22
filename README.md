@@ -7,6 +7,16 @@ If you find this crate useful, consider
 [sponsoring](https://github.com/sponsors/nvzqz) or
 [donating once](https://paypal.me/nvzqz). 💖
 
+## Install
+
+This crate is [available on crates.io](https://crates.io/crates/fmty) and can be
+used by adding the following to your project's [`Cargo.toml`](https://doc.rust-lang.org/cargo/reference/manifest.html):
+
+```toml
+[dependencies]
+fmty = "0.0.0"
+```
+
 ## MSRV
 
 This crate's minimum supported Rust version is [`1.56.0`](https://github.com/rust-lang/rust/blob/master/RELEASES.md#version-1560-2021-10-21).
