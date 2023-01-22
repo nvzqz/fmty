@@ -93,8 +93,6 @@ impl<T: Display> Display for TruncateChars<T> {
 
 #[cfg(test)]
 mod tests {
-    use alloc::string::ToString;
-
     use super::*;
 
     #[test]

@@ -369,11 +369,10 @@ macro_rules! concat {
 
 #[cfg(test)]
 mod tests {
-    use alloc::{
+    use std::{
+        iter, mem,
         rc::{Rc, Weak},
-        string::ToString,
     };
-    use core::{iter, mem};
 
     use super::*;
 
@@ -433,7 +432,7 @@ mod tests {
                 let rc = rc.upgrade().expect("`Rc` should be initialized");
 
                 // Eagerly evaluate `rc`. Recursing should be a no-op.
-                Some(alloc::format!("X{rc}"))
+                Some(format!("X{rc}"))
             });
 
             concat_once(iter)

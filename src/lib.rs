@@ -1,9 +1,6 @@
 #![doc = include_str!("../README.md")]
 #![doc(test(attr(deny(warnings))))]
-#![no_std]
-
-#[cfg(test)]
-extern crate alloc;
+#![cfg_attr(not(test), no_std)]
 
 #[macro_use]
 mod macros;
