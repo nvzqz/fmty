@@ -25,9 +25,7 @@ appropriate crate version update.
 
 ## License
 
-Like the Rust project, this library may be used under either:
-
-- [MIT License](https://github.com/nvzqz/fmty/blob/main/LICENSE-MIT)
-- [Apache License (Version 2.0)](https://github.com/nvzqz/fmty/blob/main/LICENSE-APACHE)
-
+Like the Rust project, this library may be used under either the
+[MIT License](https://github.com/nvzqz/fmty/blob/main/LICENSE-MIT) or
+[Apache License (Version 2.0)](https://github.com/nvzqz/fmty/blob/main/LICENSE-APACHE)
 at your choosing.
