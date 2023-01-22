@@ -11,6 +11,7 @@ mod macros;
 mod concat;
 mod cond;
 mod convert_case;
+mod fmt_iterator;
 mod fmt_with;
 mod format_args;
 mod infix;
@@ -34,6 +35,7 @@ pub mod types {
 }
 
 pub use crate::{
-    concat::*, cond::*, convert_case::*, fmt_with::*, format_args as fmt_args,
-    infix::*, join::*, quote::*, repeat::*, truncate::*,
+    concat::*, cond::*, convert_case::*, fmt_iterator::*, fmt_with::*,
+    format_args as fmt_args, infix::*, join::*, quote::*, repeat::*,
+    truncate::*,
 };
