@@ -6,18 +6,6 @@ pub(crate) mod types {
     #[allow(unused)]
     use super::*;
 
-    /// See [`to_uppercase()`].
-    #[derive(Clone, Copy)]
-    pub struct ToUppercase<T> {
-        pub(super) value: T,
-    }
-
-    /// See [`to_lowercase()`].
-    #[derive(Clone, Copy)]
-    pub struct ToLowercase<T> {
-        pub(super) value: T,
-    }
-
     /// See [`to_ascii_uppercase()`].
     #[derive(Clone, Copy)]
     pub struct ToAsciiUppercase<T> {
@@ -32,22 +20,6 @@ pub(crate) mod types {
 }
 
 use types::*;
-
-/// Converts to uppercase.
-///
-/// This may be used as a non-allocating alternative to
-/// [`str::to_uppercase()`](https://doc.rust-lang.org/std/primitive.str.html#method.to_uppercase).
-pub fn to_uppercase<T>(value: T) -> ToUppercase<T> {
-    ToUppercase { value }
-}
-
-/// Converts to lowercase.
-///
-/// This may be used as a non-allocating alternative to
-/// [`str::to_lowercase()`](https://doc.rust-lang.org/std/primitive.str.html#method.to_lowercase).
-pub fn to_lowercase<T>(value: T) -> ToLowercase<T> {
-    ToLowercase { value }
-}
 
 /// Converts to ASCII uppercase.
 ///
@@ -99,70 +71,6 @@ impl Write for AsciiWriter<'_, '_> {
         } else {
             c.to_ascii_lowercase()
         })
-    }
-}
-
-struct UppercaseWriter<'a, 'b> {
-    f: &'a mut Formatter<'b>,
-}
-
-impl Write for UppercaseWriter<'_, '_> {
-    fn write_str(&mut self, s: &str) -> Result {
-        for c in s.chars() {
-            self.write_char(c)?;
-        }
-        Ok(())
-    }
-
-    fn write_char(&mut self, c: char) -> Result {
-        for c in c.to_uppercase() {
-            self.f.write_char(c)?;
-        }
-        Ok(())
-    }
-}
-
-struct LowercaseWriter<'a, 'b> {
-    f: &'a mut Formatter<'b>,
-}
-
-impl Write for LowercaseWriter<'_, '_> {
-    fn write_str(&mut self, s: &str) -> Result {
-        for c in s.chars() {
-            self.write_char(c)?;
-        }
-        Ok(())
-    }
-
-    fn write_char(&mut self, c: char) -> Result {
-        for c in c.to_lowercase() {
-            self.f.write_char(c)?;
-        }
-        Ok(())
-    }
-}
-
-impl<T: Debug> Debug for ToUppercase<T> {
-    fn fmt(&self, f: &mut Formatter) -> Result {
-        write!(UppercaseWriter { f }, "{:?}", self.value)
-    }
-}
-
-impl<T: Display> Display for ToUppercase<T> {
-    fn fmt(&self, f: &mut Formatter) -> Result {
-        write!(UppercaseWriter { f }, "{}", self.value)
-    }
-}
-
-impl<T: Debug> Debug for ToLowercase<T> {
-    fn fmt(&self, f: &mut Formatter) -> Result {
-        write!(LowercaseWriter { f }, "{:?}", self.value)
-    }
-}
-
-impl<T: Display> Display for ToLowercase<T> {
-    fn fmt(&self, f: &mut Formatter) -> Result {
-        write!(LowercaseWriter { f }, "{}", self.value)
     }
 }
 

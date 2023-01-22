@@ -4,46 +4,6 @@ use test_strategy::proptest;
 
 use super::*;
 
-mod to_uppercase {
-    use super::*;
-
-    #[proptest]
-    fn debug(s: String) {
-        let expected = format!("{:?}", s).to_uppercase();
-        let result = format!("{:?}", to_uppercase(s));
-
-        assert_eq!(expected, result);
-    }
-
-    #[proptest]
-    fn display(s: String) {
-        let expected = s.to_uppercase();
-        let result = to_uppercase(s).to_string();
-
-        assert_eq!(expected, result);
-    }
-}
-
-mod to_lowercase {
-    use super::*;
-
-    #[proptest]
-    fn debug(s: String) {
-        let expected = format!("{:?}", s).to_lowercase();
-        let result = format!("{:?}", to_lowercase(s));
-
-        assert_eq!(expected, result);
-    }
-
-    #[proptest]
-    fn display(s: String) {
-        let expected = s.to_lowercase();
-        let result = to_lowercase(s).to_string();
-
-        assert_eq!(expected, result);
-    }
-}
-
 mod to_ascii_uppercase {
     use super::*;
 

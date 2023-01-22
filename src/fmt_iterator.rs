@@ -42,7 +42,7 @@ pub trait FmtIterator: Iterator + Sized {
     /// ```
     /// use fmty::FmtIterator;
     ///
-    /// let value = ["hola", "mundo"].iter().fmt_concat_map(fmty::to_uppercase);
+    /// let value = ["hola", "mundo"].iter().fmt_concat_map(fmty::to_ascii_uppercase);
     /// assert_eq!(value.to_string(), "HOLAMUNDO");
     /// ```
     fn fmt_concat_map<R, F>(self, f: F) -> ConcatMap<Self, F>
@@ -60,7 +60,7 @@ pub trait FmtIterator: Iterator + Sized {
     /// ```
     /// use fmty::FmtIterator;
     ///
-    /// let value = ["hola", "mundo"].iter().fmt_concat_map_once(fmty::to_uppercase);
+    /// let value = ["hola", "mundo"].iter().fmt_concat_map_once(fmty::to_ascii_uppercase);
     /// assert_eq!(value.to_string(), "HOLAMUNDO");
     ///
     /// assert_eq!(value.to_string(), "");
@@ -112,7 +112,7 @@ pub trait FmtIterator: Iterator + Sized {
     /// ```
     /// use fmty::FmtIterator;
     ///
-    /// let value = ["hola", "mundo"].iter().fmt_join_map(" ", fmty::to_uppercase);
+    /// let value = ["hola", "mundo"].iter().fmt_join_map(" ", fmty::to_ascii_uppercase);
     /// assert_eq!(value.to_string(), "HOLA MUNDO");
     /// ```
     fn fmt_join_map<S, R, F>(self, sep: S, f: F) -> JoinMap<Self, S, F>
@@ -130,7 +130,7 @@ pub trait FmtIterator: Iterator + Sized {
     /// ```
     /// use fmty::FmtIterator;
     ///
-    /// let value = ["hola", "mundo"].iter().fmt_join_map_once(" ", fmty::to_uppercase);
+    /// let value = ["hola", "mundo"].iter().fmt_join_map_once(" ", fmty::to_ascii_uppercase);
     /// assert_eq!(value.to_string(), "HOLA MUNDO");
     ///
     /// assert_eq!(value.to_string(), "");
@@ -182,7 +182,7 @@ pub trait FmtIterator: Iterator + Sized {
     /// ```
     /// use fmty::FmtIterator;
     ///
-    /// let value = ["hola", "mundo"].iter().fmt_csv_map(fmty::to_uppercase);
+    /// let value = ["hola", "mundo"].iter().fmt_csv_map(fmty::to_ascii_uppercase);
     /// assert_eq!(value.to_string(), "HOLA, MUNDO");
     /// ```
     fn fmt_csv_map<R, F>(self, f: F) -> CsvMap<Self, F>
@@ -200,7 +200,7 @@ pub trait FmtIterator: Iterator + Sized {
     /// ```
     /// use fmty::FmtIterator;
     ///
-    /// let value = ["hola", "mundo"].iter().fmt_csv_map_once(fmty::to_uppercase);
+    /// let value = ["hola", "mundo"].iter().fmt_csv_map_once(fmty::to_ascii_uppercase);
     /// assert_eq!(value.to_string(), "HOLA, MUNDO");
     ///
     /// assert_eq!(value.to_string(), "");

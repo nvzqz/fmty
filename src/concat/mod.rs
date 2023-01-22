@@ -89,7 +89,7 @@ pub fn concat_once<I: IntoIterator>(iter: I) -> ConcatOnce<I::IntoIter> {
 /// # Examples
 ///
 /// ```
-/// let value = fmty::concat_map(["hola", "mundo"], fmty::to_uppercase);
+/// let value = fmty::concat_map(["hola", "mundo"], fmty::to_ascii_uppercase);
 /// assert_eq!(value.to_string(), "HOLAMUNDO");
 /// ```
 pub fn concat_map<I, R, F>(iter: I, f: F) -> ConcatMap<I::IntoIter, F>
@@ -111,7 +111,7 @@ where
 /// # Examples
 ///
 /// ```
-/// let value = fmty::concat_map_once(["hola", "mundo"], fmty::to_uppercase);
+/// let value = fmty::concat_map_once(["hola", "mundo"], fmty::to_ascii_uppercase);
 /// assert_eq!(value.to_string(), "HOLAMUNDO");
 ///
 /// assert_eq!(value.to_string(), "");
