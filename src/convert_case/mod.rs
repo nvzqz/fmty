@@ -1,5 +1,7 @@
 use core::fmt::*;
 
+mod tests;
+
 pub(crate) mod types {
     #[allow(unused)]
     use super::*;
@@ -185,92 +187,5 @@ impl<T: Debug> Debug for ToAsciiUppercase<T> {
 impl<T: Display> Display for ToAsciiUppercase<T> {
     fn fmt(&self, f: &mut Formatter) -> Result {
         write!(AsciiWriter { f, uppercase: true }, "{}", self.value)
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use test_strategy::proptest;
-
-    use super::*;
-
-    mod to_uppercase {
-        use super::*;
-
-        #[proptest]
-        fn debug(s: String) {
-            let expected = format!("{:?}", s).to_uppercase();
-            let result = format!("{:?}", to_uppercase(s));
-
-            assert_eq!(expected, result);
-        }
-
-        #[proptest]
-        fn display(s: String) {
-            let expected = s.to_uppercase();
-            let result = to_uppercase(s).to_string();
-
-            assert_eq!(expected, result);
-        }
-    }
-
-    mod to_lowercase {
-        use super::*;
-
-        #[proptest]
-        fn debug(s: String) {
-            let expected = format!("{:?}", s).to_lowercase();
-            let result = format!("{:?}", to_lowercase(s));
-
-            assert_eq!(expected, result);
-        }
-
-        #[proptest]
-        fn display(s: String) {
-            let expected = s.to_lowercase();
-            let result = to_lowercase(s).to_string();
-
-            assert_eq!(expected, result);
-        }
-    }
-
-    mod to_ascii_uppercase {
-        use super::*;
-
-        #[proptest]
-        fn debug(s: String) {
-            let expected = format!("{:?}", s).to_ascii_uppercase();
-            let result = format!("{:?}", to_ascii_uppercase(s));
-
-            assert_eq!(expected, result);
-        }
-
-        #[proptest]
-        fn display(s: String) {
-            let expected = s.to_ascii_uppercase();
-            let result = to_ascii_uppercase(s).to_string();
-
-            assert_eq!(expected, result);
-        }
-    }
-
-    mod to_ascii_lowercase {
-        use super::*;
-
-        #[proptest]
-        fn debug(s: String) {
-            let expected = format!("{:?}", s).to_ascii_lowercase();
-            let result = format!("{:?}", to_ascii_lowercase(s));
-
-            assert_eq!(expected, result);
-        }
-
-        #[proptest]
-        fn display(s: String) {
-            let expected = s.to_ascii_lowercase();
-            let result = to_ascii_lowercase(s).to_string();
-
-            assert_eq!(expected, result);
-        }
     }
 }
