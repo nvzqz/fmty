@@ -1,13 +1,17 @@
-use core::fmt::*;
+use crate::types::NoOp;
+use core::fmt::{self, Debug, Display, Formatter};
 
 pub(crate) mod types {
     #[allow(unused)]
     use super::*;
 
     /// See [`cond()`], [`cond_option()`].
+    pub type Cond<T> = CondOr<T, NoOp>;
+
+    /// See [`cond_or()`], [`cond_option_or()`], [`cond_result()`].
     #[derive(Clone, Copy)]
-    pub struct Cond<T> {
-        pub(super) value: Option<T>,
+    pub struct CondOr<T, U = T> {
+        pub(super) value: Result<T, U>,
     }
 
     /// See [`cond_with()`], [`cond_with_option()`].
@@ -31,6 +35,18 @@ pub fn cond<T>(write: bool, value: T) -> Cond<T> {
     cond_option(if write { Some(value) } else { None })
 }
 
+/// Conditionally writes a value, or its fallback if `false`.
+///
+/// # Examples
+///
+/// ```
+/// assert_eq!(fmty::cond_or(true,  "hola", "mundo").to_string(), "hola");
+/// assert_eq!(fmty::cond_or(false, "hola", "mundo").to_string(), "mundo");
+/// ```
+pub fn cond_or<T, U>(write: bool, value: T, fallback: U) -> CondOr<T, U> {
+    cond_result(if write { Ok(value) } else { Err(fallback) })
+}
+
 /// Conditionally writes an [`Option`].
 ///
 /// This is has the same behavior as
@@ -43,8 +59,37 @@ pub fn cond<T>(write: bool, value: T) -> Cond<T> {
 /// assert_eq!(fmty::cond_option(Some("hola")).to_string(), "hola");
 /// assert_eq!(fmty::cond_option(None::<&str>).to_string(), "");
 /// ```
-pub fn cond_option<T>(value: Option<T>) -> Cond<T> {
-    Cond { value }
+pub fn cond_option<T>(option: Option<T>) -> Cond<T> {
+    cond_option_or(option, crate::noop())
+}
+
+/// Conditionally writes an [`Option`], or its fallback if [`None`].
+///
+/// This is equivalent to
+/// <code>[cond_result]\(option.[ok_or](Option::ok_or)(fallback)\)</code>.
+///
+/// If not using two different types, consider using [`Option::or()`] instead.
+///
+/// # Examples
+///
+/// ```
+/// assert_eq!(fmty::cond_option(Some("hola")).to_string(), "hola");
+/// assert_eq!(fmty::cond_option(None::<&str>).to_string(), "");
+/// ```
+pub fn cond_option_or<T, U>(option: Option<T>, fallback: U) -> CondOr<T, U> {
+    cond_result(option.ok_or(fallback))
+}
+
+/// Conditionally writes a [`Result`] variant.
+///
+/// # Examples
+///
+/// ```
+/// assert_eq!(fmty::cond_result::<_, &str>(Ok("hola")).to_string(),   "hola");
+/// assert_eq!(fmty::cond_result::<&str, _>(Err("mundo")).to_string(), "mundo");
+/// ```
+pub fn cond_result<T, U>(result: Result<T, U>) -> CondOr<T, U> {
+    CondOr { value: result }
 }
 
 /// Conditionally writes a closure result.
@@ -77,21 +122,21 @@ where
     CondWith { make_value: f }
 }
 
-impl<T: Debug> Debug for Cond<T> {
-    fn fmt(&self, f: &mut Formatter) -> Result {
-        if let Some(value) = &self.value {
-            value.fmt(f)?;
+impl<T: Debug, U: Debug> Debug for CondOr<T, U> {
+    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
+        match &self.value {
+            Ok(value) => value.fmt(f),
+            Err(value) => value.fmt(f),
         }
-        Ok(())
     }
 }
 
-impl<T: Display> Display for Cond<T> {
-    fn fmt(&self, f: &mut Formatter) -> Result {
-        if let Some(value) = &self.value {
-            value.fmt(f)?;
+impl<T: Display, U: Display> Display for CondOr<T, U> {
+    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
+        match &self.value {
+            Ok(value) => value.fmt(f),
+            Err(value) => value.fmt(f),
         }
-        Ok(())
     }
 }
 
@@ -100,7 +145,7 @@ where
     F: Fn() -> R,
     R: Debug,
 {
-    fn fmt(&self, f: &mut Formatter) -> Result {
+    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         if let Some(make_value) = &self.make_value {
             make_value().fmt(f)?;
         }
@@ -113,7 +158,7 @@ where
     F: Fn() -> R,
     R: Display,
 {
-    fn fmt(&self, f: &mut Formatter) -> Result {
+    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         if let Some(make_value) = &self.make_value {
             make_value().fmt(f)?;
         }
@@ -126,7 +171,7 @@ where
     F: Fn() -> Option<R>,
     R: Debug,
 {
-    fn fmt(&self, f: &mut Formatter) -> Result {
+    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         if let Some(value) = (self.make_value)() {
             value.fmt(f)?;
         }
@@ -139,7 +184,7 @@ where
     F: Fn() -> Option<R>,
     R: Display,
 {
-    fn fmt(&self, f: &mut Formatter) -> Result {
+    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         if let Some(value) = (self.make_value)() {
             value.fmt(f)?;
         }
