@@ -80,7 +80,7 @@ where
 impl<T: Debug> Debug for Cond<T> {
     fn fmt(&self, f: &mut Formatter) -> Result {
         if let Some(value) = &self.value {
-            write!(f, "{:?}", value)?;
+            value.fmt(f)?;
         }
         Ok(())
     }
@@ -89,7 +89,7 @@ impl<T: Debug> Debug for Cond<T> {
 impl<T: Display> Display for Cond<T> {
     fn fmt(&self, f: &mut Formatter) -> Result {
         if let Some(value) = &self.value {
-            write!(f, "{}", value)?;
+            value.fmt(f)?;
         }
         Ok(())
     }
@@ -102,7 +102,7 @@ where
 {
     fn fmt(&self, f: &mut Formatter) -> Result {
         if let Some(make_value) = &self.make_value {
-            write!(f, "{:?}", make_value())?;
+            make_value().fmt(f)?;
         }
         Ok(())
     }
@@ -115,7 +115,7 @@ where
 {
     fn fmt(&self, f: &mut Formatter) -> Result {
         if let Some(make_value) = &self.make_value {
-            write!(f, "{}", make_value())?;
+            make_value().fmt(f)?;
         }
         Ok(())
     }
@@ -128,7 +128,7 @@ where
 {
     fn fmt(&self, f: &mut Formatter) -> Result {
         if let Some(value) = (self.make_value)() {
-            write!(f, "{:?}", value)?;
+            value.fmt(f)?;
         }
         Ok(())
     }
@@ -141,7 +141,7 @@ where
 {
     fn fmt(&self, f: &mut Formatter) -> Result {
         if let Some(value) = (self.make_value)() {
-            write!(f, "{}", value)?;
+            value.fmt(f)?;
         }
         Ok(())
     }
