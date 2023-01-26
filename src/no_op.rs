@@ -2,21 +2,21 @@ pub(crate) mod types {
     #[allow(unused)]
     use super::*;
 
-    /// See [`noop()`].
+    /// See [`no_op()`].
     pub type NoOp = crate::types::ConcatTuple<()>;
 }
 
 use types::*;
 
-/// Writes nothing (no-op).
+/// Writes nothing.
 ///
 /// # Examples
 ///
 /// ```
-/// assert_eq!(format!("{}", fmty::noop()), "");
-/// assert_eq!(format!("{:?}", fmty::noop()), "");
+/// assert_eq!(format!("{}", fmty::no_op()), "");
+/// assert_eq!(format!("{:?}", fmty::no_op()), "");
 /// ```
 #[inline]
-pub fn noop() -> NoOp {
+pub fn no_op() -> NoOp {
     crate::concat_tuple(())
 }

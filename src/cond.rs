@@ -60,7 +60,7 @@ pub fn cond_or<T, U>(write: bool, value: T, fallback: U) -> CondOr<T, U> {
 /// assert_eq!(fmty::cond_option(None::<&str>).to_string(), "");
 /// ```
 pub fn cond_option<T>(option: Option<T>) -> Cond<T> {
-    cond_option_or(option, crate::noop())
+    cond_option_or(option, crate::no_op())
 }
 
 /// Conditionally writes an [`Option`], or its fallback if [`None`].

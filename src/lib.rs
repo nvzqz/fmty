@@ -13,7 +13,7 @@ mod fmt_with;
 mod format_args;
 mod infix;
 mod join;
-mod noop;
+mod no_op;
 mod once;
 mod quote;
 mod repeat;
@@ -27,13 +27,13 @@ pub mod types {
     #[doc(inline)]
     pub use crate::{
         concat::types::*, cond::types::*, convert_case::types::*,
-        fmt_with::types::*, infix::types::*, join::types::*, noop::types::*,
+        fmt_with::types::*, infix::types::*, join::types::*, no_op::types::*,
         repeat::types::*, truncate::types::*,
     };
 }
 
 pub use crate::{
     concat::*, cond::*, convert_case::*, fmt_iterator::*, fmt_with::*,
-    format_args as fmt_args, infix::*, join::*, noop::*, quote::*, repeat::*,
+    format_args as fmt_args, infix::*, join::*, no_op::*, quote::*, repeat::*,
     truncate::*,
 };
