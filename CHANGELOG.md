@@ -1,4 +1,4 @@
-# Changelog [![Crates.io](https://img.shields.io/crates/v/fmty.svg)](https://crates.io/crates/fmty)
+# Changelog [![docs.rs](https://img.shields.io/crates/v/fmty.svg?label=docs.rs&color=blue)](https://docs.rs/fmty)
 
 All notable changes to this project will be documented in this file.
 
