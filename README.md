@@ -20,7 +20,7 @@ used by adding the following to your project's [`Cargo.toml`](https://doc.rust-l
 
 ```toml
 [dependencies]
-fmty = "0.0.0"
+fmty = "0.1.0"
 ```
 
 ## MSRV
