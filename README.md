@@ -1,12 +1,14 @@
-# `fmty` [![docs.rs](https://img.shields.io/crates/v/fmty.svg?label=docs.rs&color=blue)](https://docs.rs/fmty) [![crates.io](https://img.shields.io/crates/d/fmty.svg)](https://crates.io/crates/fmty)
+# `fmty` [![docs.rs](https://img.shields.io/crates/v/fmty.svg?label=docs.rs&color=blue)](https://docs.rs/fmty) [![crates.io](https://img.shields.io/crates/d/fmty.svg)](https://crates.io/crates/fmty) [![github](https://img.shields.io/github/stars/nvzqz/fmty.svg?color=black)][github]
 
 Composable [`core::fmt`](https://doc.rust-lang.org/core/fmt/) utilities, brought
 to you by [Nikolai Vazquez](https://hachyderm.io/@nikolai).
 
 If you find this crate useful, consider
-[starring it](https://github.com/nvzqz/fmty) as well as
+[starring it][github] as well as
 [sponsoring](https://github.com/sponsors/nvzqz) or
 [donating once](https://paypal.me/nvzqz). 💖
+
+[github]: https://github.com/nvzqz/fmty
 
 ## Install
 
