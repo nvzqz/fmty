@@ -11,7 +11,13 @@ If you find this crate useful, consider
 ## Install
 
 This crate is [available on crates.io](https://crates.io/crates/fmty) and can be
-used by adding the following to your project's [`Cargo.toml`](https://doc.rust-lang.org/cargo/reference/manifest.html):
+used by running the following `cargo` command in your project directory:
+
+```sh
+cargo add fmty
+```
+
+or by manually adding the following to your project's [`Cargo.toml`](https://doc.rust-lang.org/cargo/reference/manifest.html):
 
 ```toml
 [dependencies]
