@@ -23,6 +23,11 @@
 /// assert_eq!(a.to_string(), b.to_string());
 /// assert_eq!(a.to_string(), c.to_string());
 /// ```
+///
+/// # Limitations
+///
+/// This has the same [limitations of `format_args!`](crate::format_args!#limitations)
+/// and [limitations of `fmt_with()`](crate::fmt_with()#limitations).
 #[macro_export]
 macro_rules! fmt {
     ($fmt:literal $($args:tt)*) => {

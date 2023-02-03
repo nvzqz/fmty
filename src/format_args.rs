@@ -32,7 +32,8 @@
 ///
 /// # Limitations
 ///
-/// Because of how this macro is implemented, nested invocations cannot be implicitly owned.
+/// Because this macro is implemented via [`fmt_with()`](crate::fmt_with()),
+/// nested invocations cannot be implicitly owned.
 ///
 /// ```compile_fail
 /// use fmty::fmt_args;
@@ -63,8 +64,9 @@
 /// # drop(value);
 /// ```
 ///
-/// See [issue #1](https://github.com/nvzqz/fmty/issues/1) for tracking the
-/// status of this limitation.
+/// See [issue #1](https://github.com/nvzqz/fmty/issues/1) and
+/// [Rust issue #107623](https://github.com/rust-lang/rust/issues/107623) for
+/// tracking the status of this limitation.
 #[macro_export]
 macro_rules! format_args {
     ($($tt:tt)+) => {
