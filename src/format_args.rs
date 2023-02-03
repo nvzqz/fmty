@@ -52,6 +52,9 @@
 /// let value = fmt_args!("{}", inner);
 /// # drop(value);
 /// ```
+///
+/// See [issue #1](https://github.com/nvzqz/fmty/issues/1) for tracking the
+/// status of this limitation.
 #[macro_export]
 macro_rules! format_args {
     ($($tt:tt)+) => {
