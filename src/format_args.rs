@@ -53,6 +53,16 @@
 /// # drop(value);
 /// ```
 ///
+/// Alternatively, use [`core::format_args!`] for the inner value. This works
+/// because all arguments are lazily evaluated within a closure.
+///
+/// ```
+/// # use fmty::fmt_args;
+/// # let s: String = "hola".to_owned();
+/// let value = fmt_args!("{}", format_args!("{}", s));
+/// # drop(value);
+/// ```
+///
 /// See [issue #1](https://github.com/nvzqz/fmty/issues/1) for tracking the
 /// status of this limitation.
 #[macro_export]
