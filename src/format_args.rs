@@ -43,7 +43,7 @@
 /// # drop(value);
 /// ```
 ///
-/// To work around this, the inner value must be explicitly binded:
+/// To work around this, the inner value must be explicitly bound:
 ///
 /// ```
 /// # use fmty::fmt_args;
