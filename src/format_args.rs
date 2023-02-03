@@ -35,6 +35,8 @@
 /// Because of how this macro is implemented, nested invocations cannot be implicitly owned.
 ///
 /// ```compile_fail
+/// use fmty::fmt_args;
+///
 /// let s: String = "hola".to_owned();
 ///
 /// let value = fmt_args!("{}", fmt_args!("{}", s));
@@ -44,9 +46,10 @@
 /// To work around this, the inner value must be explicitly binded:
 ///
 /// ```
+/// # use fmty::fmt_args;
 /// # let s: String = "hola".to_owned();
-/// let inner = fmty::format_args!("{}", s);
-/// let value = fmty::format_args!("{}", inner);
+/// let inner = fmt_args!("{}", s);
+/// let value = fmt_args!("{}", inner);
 /// # drop(value);
 /// ```
 #[macro_export]
