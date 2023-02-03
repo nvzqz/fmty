@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- [`fmt!`](https://docs.rs/fmty/0.1.1/fmty/macro.fmt.html) macro that behaves
+  like [`format_args!`](https://docs.rs/fmty/0.1.*/fmty/macro.format_args.html)
+  or [`fmt_with()`](https://docs.rs/fmty/0.1.*/fmty/fn.fmt_with.html) depending
+  on usage.
+
 ## 0.1.0 - 2023-02-01
 
 Initial release

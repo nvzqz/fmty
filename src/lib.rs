@@ -8,6 +8,7 @@ mod macros;
 mod concat;
 mod cond;
 mod convert_case;
+mod fmt;
 mod fmt_iterator;
 mod fmt_with;
 mod format_args;
