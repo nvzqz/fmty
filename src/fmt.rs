@@ -1,7 +1,7 @@
 /// Like [`format_args!`](crate::format_args!) or [`fmt_with()`](crate::fmt_with())
 /// depending on usage.
 ///
-/// This macro accepts either a formatting arguments or a closure. It is similar
+/// This macro accepts either formatting arguments or a closure. It is similar
 /// to [`format::lazy_format!`](https://docs.rs/format/0.2.*/format/macro.lazy_format.html)
 /// with the added benefit of being a declarative macro rather than a procedural
 /// macro.
