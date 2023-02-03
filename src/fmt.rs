@@ -25,8 +25,8 @@
 /// ```
 #[macro_export]
 macro_rules! fmt {
-    ($fmt:literal $($rest:tt)*) => {
-        $crate::format_args!($fmt $($rest)*)
+    ($fmt:literal $($args:tt)*) => {
+        $crate::format_args!($fmt $($args)*)
     };
     ($fn:expr) => {
         $crate::fmt_with($fn)
