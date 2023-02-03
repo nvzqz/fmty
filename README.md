@@ -23,7 +23,7 @@ or by manually adding the following to your project's [`Cargo.toml`](https://doc
 
 ```toml
 [dependencies]
-fmty = "0.1.0"
+fmty = "0.1.1"
 ```
 
 ## MSRV
